@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact us — Hartley &amp; Grove</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="demo-banner">Static demo &middot; live data snapshot from the Apex27 Portal API &middot; forms are illustrative<a href="../../">back to portfolio &larr;</a></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-mark">H<span class="amp">&amp;</span>G</span>
+        <span class="logo-text">
+          <span class="logo-name">Hartley <span class="amp">&amp;</span> Grove</span>
+          <span class="logo-sub">Fine homes, expertly matched</span>
+        </span>
+      </a>
+      <nav class="main-nav" id="main-nav">
+        <a href="index.html">Home</a>
+        <a href="listings.html?transaction_type=sale">Sales</a>
+        <a href="listings.html?transaction_type=rent">Lettings</a>
+        <a href="valuation.html">Valuation</a>
+        <a href="contact.html" class="nav-cta">Contact Us</a>
+      </nav>
+      <button class="nav-toggle" aria-label="Toggle navigation" onclick="document.getElementById('main-nav').classList.toggle('open')">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-head">
+      <div class="container">
+        <p class="section-kicker">We'd love to hear from you</p>
+        <h1 class="page-title">Contact Hartley &amp; Grove</h1>
+        <p class="page-sub">Questions about a property, the market, or our services? Send us a message and we'll get back to you promptly.</p>
+      </div>
+    </section>
+
+    <div class="container contact-layout">
+      <div class="contact-details">
+        <div class="contact-card">
+          <h2 class="contact-card-title">Our office</h2>
+          <p>12 Chapel Street, Stratford-upon-Avon, Warwickshire, CV37 6HA</p>
+          <p class="contact-line"><span>Phone</span><a href="tel:01789777777">01789 777777</a></p>
+          <p class="contact-line"><span>Email</span><a href="mailto:hello@hartleyandgrove.co.uk">hello@hartleyandgrove.co.uk</a></p>
+          <p class="contact-line"><span>Hours</span>Mon&ndash;Fri 9am&ndash;6pm, Sat 10am&ndash;4pm</p>
+        </div>
+        <div class="contact-card">
+          <h2 class="contact-card-title">Popular searches</h2>
+          <ul class="footer-links">
+            <li><a href="listings.html?transaction_type=sale">Properties for sale</a></li>
+            <li><a href="listings.html?transaction_type=rent">Properties to rent</a></li>
+            <li><a href="valuation.html">Book a valuation</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="contact-form-wrap">
+        <form id="contact-form" class="stack-form">
+          <h2 class="form-heading">Send a message</h2>
+          <div class="form-row">
+            <div><label for="c-first">First name *</label><input id="c-first" name="first_name" required></div>
+            <div><label for="c-last">Last name *</label><input id="c-last" name="last_name" required></div>
+          </div>
+          <div class="form-row">
+            <div><label for="c-email">Email *</label><input id="c-email" name="email" type="email" required></div>
+            <div><label for="c-phone">Phone</label><input id="c-phone" name="phone" type="tel"></div>
+          </div>
+          <label for="c-msg">Message *</label>
+          <textarea id="c-msg" name="message" rows="6" required placeholder="How can we help?"></textarea>
+          <button type="submit" class="btn btn-gold btn-large">Send message</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <p class="footer-logo">Hartley <span class="amp">&amp;</span> Grove</p>
+        <p class="footer-tagline">Fine homes, expertly matched.</p>
+        <p class="footer-contact">12 Chapel Street, Stratford-upon-Avon, Warwickshire, CV37 6HA</p>
+        <p class="footer-contact"><a href="tel:01789777777">01789 777777</a> &middot; <a href="mailto:hello@hartleyandgrove.co.uk">hello@hartleyandgrove.co.uk</a></p>
+      </div>
+      <div>
+        <h4>Search</h4>
+        <ul class="footer-links">
+          <li><a href="listings.html?transaction_type=sale">Properties for sale</a></li>
+          <li><a href="listings.html?transaction_type=rent">Properties to rent</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <ul class="footer-links">
+          <li><a href="valuation.html">Free valuation</a></li>
+          <li><a href="contact.html">Contact us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <p>&copy; 2026 Hartley &amp; Grove. A fictional estate agency &middot; property data from the Apex27 Portal API snapshot.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/agency.js"></script>
+  <script>
+    AG.demoNotice(document.getElementById("contact-form"), "Message captured (demo).",
+      "This is a static demo, so the message is not sent. In production it would POST to the Apex27 /contact endpoint.");
+  </script>
+</body>
+</html>

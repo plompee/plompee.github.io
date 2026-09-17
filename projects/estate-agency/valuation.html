@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free valuation — Hartley &amp; Grove</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="demo-banner">Static demo &middot; live data snapshot from the Apex27 Portal API &middot; forms are illustrative<a href="../../">back to portfolio &larr;</a></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-mark">H<span class="amp">&amp;</span>G</span>
+        <span class="logo-text">
+          <span class="logo-name">Hartley <span class="amp">&amp;</span> Grove</span>
+          <span class="logo-sub">Fine homes, expertly matched</span>
+        </span>
+      </a>
+      <nav class="main-nav" id="main-nav">
+        <a href="index.html">Home</a>
+        <a href="listings.html?transaction_type=sale">Sales</a>
+        <a href="listings.html?transaction_type=rent">Lettings</a>
+        <a href="valuation.html">Valuation</a>
+        <a href="contact.html" class="nav-cta">Contact Us</a>
+      </nav>
+      <button class="nav-toggle" aria-label="Toggle navigation" onclick="document.getElementById('main-nav').classList.toggle('open')">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-head">
+      <div class="container">
+        <p class="section-kicker">No obligation</p>
+        <h1 class="page-title">Book your free valuation</h1>
+        <p class="page-sub">Tell us a little about your property and we'll arrange for a local expert to visit and give you an honest, market-aware figure.</p>
+      </div>
+    </section>
+
+    <div class="container form-page">
+      <form id="valuation-form" class="stack-form valuation-form">
+        <h2 class="form-heading">Your details</h2>
+        <div class="form-row">
+          <div><label for="v-first">First name *</label><input id="v-first" name="first_name" required></div>
+          <div><label for="v-last">Last name *</label><input id="v-last" name="last_name" required></div>
+        </div>
+        <div class="form-row">
+          <div><label for="v-email">Email *</label><input id="v-email" name="email" type="email" required></div>
+          <div><label for="v-phone">Phone</label><input id="v-phone" name="phone" type="tel"></div>
+        </div>
+
+        <h2 class="form-heading">The property</h2>
+        <label for="v-address1">Address line 1 *</label>
+        <input id="v-address1" name="address_1" required>
+        <label for="v-address2">Address line 2</label>
+        <input id="v-address2" name="address_2">
+        <div class="form-row">
+          <div><label for="v-city">City *</label><input id="v-city" name="city" required></div>
+          <div><label for="v-county">County</label><input id="v-county" name="county"></div>
+        </div>
+        <div class="form-row">
+          <div><label for="v-postal">Postcode *</label><input id="v-postal" name="postal_code" required placeholder="e.g. CV37 6HA"></div>
+          <div><label for="v-country">Country</label><input id="v-country" name="country" placeholder="GB (default)"></div>
+        </div>
+        <label for="v-tt">I'd like to *</label>
+        <select id="v-tt" name="transaction_type" required></select>
+
+        <div class="form-row form-row-4">
+          <div><label for="v-beds">Bedrooms</label><input id="v-beds" name="bedrooms" type="number" min="0"></div>
+          <div><label for="v-baths">Bathrooms</label><input id="v-baths" name="bathrooms" type="number" min="0"></div>
+          <div><label for="v-rec">Receptions</label><input id="v-rec" name="receptions" type="number" min="0"></div>
+          <div><label for="v-park">Parking</label><input id="v-park" name="parking_spaces" type="number" min="0"></div>
+        </div>
+
+        <label for="v-msg">Anything else we should know?</label>
+        <textarea id="v-msg" name="message" rows="4" placeholder="Recent improvements, timings, specific concerns..."></textarea>
+
+        <button type="submit" class="btn btn-gold btn-large">Request my valuation</button>
+        <p class="form-note">* Required fields. We'll only use your details to arrange your valuation.</p>
+      </form>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <p class="footer-logo">Hartley <span class="amp">&amp;</span> Grove</p>
+        <p class="footer-tagline">Fine homes, expertly matched.</p>
+        <p class="footer-contact">12 Chapel Street, Stratford-upon-Avon, Warwickshire, CV37 6HA</p>
+        <p class="footer-contact"><a href="tel:01789777777">01789 777777</a> &middot; <a href="mailto:hello@hartleyandgrove.co.uk">hello@hartleyandgrove.co.uk</a></p>
+      </div>
+      <div>
+        <h4>Search</h4>
+        <ul class="footer-links">
+          <li><a href="listings.html?transaction_type=sale">Properties for sale</a></li>
+          <li><a href="listings.html?transaction_type=rent">Properties to rent</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <ul class="footer-links">
+          <li><a href="valuation.html">Free valuation</a></li>
+          <li><a href="contact.html">Contact us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <p>&copy; 2026 Hartley &amp; Grove. A fictional estate agency &middot; property data from the Apex27 Portal API snapshot.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="js/agency.js"></script>
+  <script>
+    (function () {
+      var sel = document.getElementById("v-tt");
+      if (sel) {
+        sel.innerHTML = AG.DATA.options.transactionTypes.map(function (o) {
+          return '<option value="' + o.value + '"' + (o.value === "sale" ? " selected" : "") + ">" + o.display + "</option>";
+        }).join("");
+      }
+      AG.demoNotice(document.getElementById("valuation-form"), "Valuation request captured (demo).",
+        "This is a static demo, so the request is not sent. In production it would POST to the Apex27 /request-valuation endpoint.");
+    })();
+  </script>
+</body>
+</html>

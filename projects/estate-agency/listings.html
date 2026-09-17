@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Property search — Hartley &amp; Grove</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta name="description" content="Search properties for sale and to rent.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="demo-banner">Static demo &middot; live data snapshot from the Apex27 Portal API &middot; forms are illustrative<a href="../../">back to portfolio &larr;</a></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-mark">H<span class="amp">&amp;</span>G</span>
+        <span class="logo-text">
+          <span class="logo-name">Hartley <span class="amp">&amp;</span> Grove</span>
+          <span class="logo-sub">Fine homes, expertly matched</span>
+        </span>
+      </a>
+      <nav class="main-nav" id="main-nav">
+        <a href="index.html">Home</a>
+        <a href="listings.html?transaction_type=sale">Sales</a>
+        <a href="listings.html?transaction_type=rent">Lettings</a>
+        <a href="valuation.html">Valuation</a>
+        <a href="contact.html" class="nav-cta">Contact Us</a>
+      </nav>
+      <button class="nav-toggle" aria-label="Toggle navigation" onclick="document.getElementById('main-nav').classList.toggle('open')">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-head">
+      <div class="container">
+        <h1 class="page-title">Property search</h1>
+        <p class="page-sub" id="page-sub">Searching…</p>
+      </div>
+    </section>
+
+    <div class="container listings-layout">
+      <aside class="filters">
+        <form id="filter-form" class="filter-form">
+          <h2 class="filter-title">Refine search</h2>
+
+          <label for="f-tt">Transaction type</label>
+          <select id="f-tt" name="transaction_type"></select>
+
+          <label for="f-type">Property type</label>
+          <select id="f-type" name="property_type"></select>
+
+          <label for="f-city">City</label>
+          <select id="f-city" name="city"></select>
+
+          <div class="filter-row">
+            <div>
+              <label for="f-min-price">Min price</label>
+              <input id="f-min-price" name="min_price" type="number" min="0" step="1000" placeholder="&pound; min">
+            </div>
+            <div>
+              <label for="f-max-price">Max price</label>
+              <input id="f-max-price" name="max_price" type="number" min="0" step="1000" placeholder="&pound; max">
+            </div>
+          </div>
+
+          <div class="filter-row">
+            <div>
+              <label for="f-min-beds">Min beds</label>
+              <select id="f-min-beds" name="min_beds">
+                <option value="">Any</option>
+                <option value="1">1+</option><option value="2">2+</option><option value="3">3+</option>
+                <option value="4">4+</option><option value="5">5+</option>
+              </select>
+            </div>
+            <div>
+              <label for="f-max-beds">Max beds</label>
+              <select id="f-max-beds" name="max_beds">
+                <option value="">Any</option>
+                <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+                <option value="4">4</option><option value="5">5</option>
+              </select>
+            </div>
+          </div>
+
+          <label class="check-label">
+            <input type="checkbox" id="f-featured" name="featured" value="1">
+            Featured properties only
+          </label>
+          <label class="check-label">
+            <input type="checkbox" id="f-sstc" name="include_sstc" value="1">
+            Include under offer / SSTC
+          </label>
+
+          <button type="submit" class="btn btn-gold btn-block">Update search</button>
+          <a id="clear-filters" href="listings.html?transaction_type=sale" class="link-quiet">Clear filters</a>
+        </form>
+      </aside>
+
+      <div class="results">
+        <div class="results-toolbar">
+          <p class="results-count" id="results-count">—</p>
+          <div class="sort-form">
+            <label for="f-sort">Sort by</label>
+            <select id="f-sort" name="sort"></select>
+          </div>
+        </div>
+
+        <div class="property-grid" id="results-grid"></div>
+        <nav class="pagination" id="pagination"></nav>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <p class="footer-logo">Hartley <span class="amp">&amp;</span> Grove</p>
+        <p class="footer-tagline">Fine homes, expertly matched.</p>
+        <p class="footer-contact">12 Chapel Street, Stratford-upon-Avon, Warwickshire, CV37 6HA</p>
+        <p class="footer-contact"><a href="tel:01789777777">01789 777777</a> &middot; <a href="mailto:hello@hartleyandgrove.co.uk">hello@hartleyandgrove.co.uk</a></p>
+      </div>
+      <div>
+        <h4>Search</h4>
+        <ul class="footer-links">
+          <li><a href="listings.html?transaction_type=sale">Properties for sale</a></li>
+          <li><a href="listings.html?transaction_type=rent">Properties to rent</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <ul class="footer-links">
+          <li><a href="valuation.html">Free valuation</a></li>
+          <li><a href="contact.html">Contact us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <p>&copy; 2026 Hartley &amp; Grove. A fictional estate agency &middot; property data from the Apex27 Portal API snapshot.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="js/agency.js"></script>
+  <script>AG.initListings();</script>
+</body>
+</html>

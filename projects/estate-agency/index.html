@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hartley &amp; Grove — Fine homes, expertly matched</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta name="description" content="Hartley & Grove — fictional estate agency demo built on a live data snapshot of the Apex27 Portal API.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="demo-banner">Static demo &middot; live data snapshot from the Apex27 Portal API &middot; forms are illustrative<a href="../../">back to portfolio &larr;</a></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-mark">H<span class="amp">&amp;</span>G</span>
+        <span class="logo-text">
+          <span class="logo-name">Hartley <span class="amp">&amp;</span> Grove</span>
+          <span class="logo-sub">Fine homes, expertly matched</span>
+        </span>
+      </a>
+      <nav class="main-nav" id="main-nav">
+        <a href="index.html">Home</a>
+        <a href="listings.html?transaction_type=sale">Sales</a>
+        <a href="listings.html?transaction_type=rent">Lettings</a>
+        <a href="valuation.html">Valuation</a>
+        <a href="contact.html" class="nav-cta">Contact Us</a>
+      </nav>
+      <button class="nav-toggle" aria-label="Toggle navigation" onclick="document.getElementById('main-nav').classList.toggle('open')">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <p class="hero-kicker">Est. 1987 &middot; Warwickshire</p>
+        <h1 class="hero-title">Find a place<br>you'll love to live</h1>
+        <p class="hero-sub">From townhouses to country retreats, Hartley &amp; Grove pairs people with properties worth coming home to.</p>
+
+        <form id="hero-search" class="hero-search">
+          <div class="hero-search-row">
+            <div class="hero-search-field">
+              <label for="h-tt">I want to</label>
+              <select id="h-tt" name="transaction_type">
+                <option value="sale">Buy</option>
+                <option value="rent">Rent</option>
+              </select>
+            </div>
+            <div class="hero-search-field">
+              <label for="h-city">Location</label>
+              <input id="h-city" name="city" list="city-list" placeholder="City or town">
+              <datalist id="city-list"></datalist>
+            </div>
+            <div class="hero-search-field">
+              <label for="h-max">Max price</label>
+              <select id="h-max" name="max_price">
+                <option value="">No limit</option>
+                <option value="150000">&pound;150,000</option>
+                <option value="250000">&pound;250,000</option>
+                <option value="350000">&pound;350,000</option>
+                <option value="500000">&pound;500,000</option>
+                <option value="750000">&pound;750,000</option>
+                <option value="1000000">&pound;1,000,000</option>
+                <option value="2000000">&pound;2,000,000+</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-gold">Search</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="stats-strip" id="stats-strip" style="display:none">
+      <div class="container stats-grid">
+        <div class="stat"><span class="stat-number" id="stat-sold">0</span><span class="stat-label">Properties sold</span></div>
+        <div class="stat"><span class="stat-number" id="stat-under">0</span><span class="stat-label">Under offer</span></div>
+        <div class="stat"><span class="stat-number" id="stat-applicants">0</span><span class="stat-label">Registered buyers</span></div>
+        <div class="stat"><span class="stat-number" id="stat-managed">0</span><span class="stat-label">Properties managed</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">Handpicked</p>
+            <h2 class="section-title">Featured properties</h2>
+          </div>
+          <a href="listings.html?transaction_type=sale" class="link-arrow">View all properties &rarr;</a>
+        </div>
+        <div class="property-grid" id="featured-grid"></div>
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="container split-grid">
+        <div>
+          <p class="section-kicker">Why Hartley &amp; Grove</p>
+          <h2 class="section-title">A personal service,<br>rooted locally</h2>
+          <p>For nearly forty years our agents have walked the streets we sell on. We price with judgment, market with care, and negotiate with quiet stubbornness on your behalf.</p>
+          <ul class="tick-list">
+            <li>Local valuation experts, not online algorithms</li>
+            <li>Professional photography and floorplans on every listing</li>
+            <li>Dedicated progressor from offer to completion</li>
+          </ul>
+          <a href="valuation.html" class="btn btn-outline">Book a free valuation</a>
+        </div>
+        <div class="quote-card">
+          <p class="quote-mark">&ldquo;</p>
+          <p class="quote-text">They sold our cottage in three weeks and handled every step with real grace. The best decision we made all year.</p>
+          <p class="quote-author">— E. Whitfield, Stratford-upon-Avon</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section cta-band">
+      <div class="container cta-inner">
+        <div>
+          <h2 class="section-title">Thinking of selling?</h2>
+          <p>Book a free, no-obligation valuation and find out what your home is really worth.</p>
+        </div>
+        <a href="valuation.html" class="btn btn-gold btn-large">Get a free valuation</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <p class="footer-logo">Hartley <span class="amp">&amp;</span> Grove</p>
+        <p class="footer-tagline">Fine homes, expertly matched.</p>
+        <p class="footer-contact">12 Chapel Street, Stratford-upon-Avon, Warwickshire, CV37 6HA</p>
+        <p class="footer-contact"><a href="tel:01789777777">01789 777777</a> &middot; <a href="mailto:hello@hartleyandgrove.co.uk">hello@hartleyandgrove.co.uk</a></p>
+      </div>
+      <div>
+        <h4>Search</h4>
+        <ul class="footer-links">
+          <li><a href="listings.html?transaction_type=sale">Properties for sale</a></li>
+          <li><a href="listings.html?transaction_type=rent">Properties to rent</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <ul class="footer-links">
+          <li><a href="valuation.html">Free valuation</a></li>
+          <li><a href="contact.html">Contact us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <p>&copy; 2026 Hartley &amp; Grove. A fictional estate agency &middot; property data from the Apex27 Portal API snapshot.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="js/agency.js"></script>
+  <script>AG.initHome();</script>
+</body>
+</html>

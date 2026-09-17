@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Property — Hartley &amp; Grove</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="demo-banner">Static demo &middot; live data snapshot from the Apex27 Portal API &middot; forms are illustrative<a href="../../">back to portfolio &larr;</a></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-mark">H<span class="amp">&amp;</span>G</span>
+        <span class="logo-text">
+          <span class="logo-name">Hartley <span class="amp">&amp;</span> Grove</span>
+          <span class="logo-sub">Fine homes, expertly matched</span>
+        </span>
+      </a>
+      <nav class="main-nav" id="main-nav">
+        <a href="index.html">Home</a>
+        <a href="listings.html?transaction_type=sale">Sales</a>
+        <a href="listings.html?transaction_type=rent">Lettings</a>
+        <a href="valuation.html">Valuation</a>
+        <a href="contact.html" class="nav-cta">Contact Us</a>
+      </nav>
+      <button class="nav-toggle" aria-label="Toggle navigation" onclick="document.getElementById('main-nav').classList.toggle('open')">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <div id="detail-root"></div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <p class="footer-logo">Hartley <span class="amp">&amp;</span> Grove</p>
+        <p class="footer-tagline">Fine homes, expertly matched.</p>
+        <p class="footer-contact">12 Chapel Street, Stratford-upon-Avon, Warwickshire, CV37 6HA</p>
+        <p class="footer-contact"><a href="tel:01789777777">01789 777777</a> &middot; <a href="mailto:hello@hartleyandgrove.co.uk">hello@hartleyandgrove.co.uk</a></p>
+      </div>
+      <div>
+        <h4>Search</h4>
+        <ul class="footer-links">
+          <li><a href="listings.html?transaction_type=sale">Properties for sale</a></li>
+          <li><a href="listings.html?transaction_type=rent">Properties to rent</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <ul class="footer-links">
+          <li><a href="valuation.html">Free valuation</a></li>
+          <li><a href="contact.html">Contact us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <p>&copy; 2026 Hartley &amp; Grove. A fictional estate agency &middot; property data from the Apex27 Portal API snapshot.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="js/agency.js"></script>
+  <script>AG.initProperty();</script>
+</body>
+</html>

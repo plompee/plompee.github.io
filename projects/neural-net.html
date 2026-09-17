@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neural Net Playground — Demo | Dima Livak</title>
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<meta name="description" content="Watch a real neural network learn in your browser: place points, run training, see the decision boundary and weights update live.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0e14;--panel:#101623;--panel-2:#151d2e;
+  --text:#dce3ee;--muted:#7f8ba0;
+  --green:#4ade80;--cyan:#38bdf8;--amber:#fbbf24;--red:#f87171;
+  --line:#1f2a3d;
+  --mono:'JetBrains Mono', ui-monospace, monospace;
+  --sans:'Inter', system-ui, sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+a{color:var(--cyan);text-decoration:none;}a:hover{text-decoration:underline;}
+::selection{background:var(--green);color:#052e16;}
+.wrap{max-width:1100px;margin:0 auto;padding:0 24px;}
+
+header.nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(12px);background:rgba(10,14,20,0.8);border-bottom:1px solid var(--line);}
+.nav-inner{max-width:1100px;margin:0 auto;padding:13px 24px;display:flex;justify-content:space-between;align-items:center;}
+.nav-mark{font-family:var(--mono);font-weight:700;font-size:14px;color:var(--text);}
+.nav-mark .c1{color:var(--green);}.nav-mark .c2{color:var(--cyan);}
+.nav-back{font-family:var(--mono);font-size:12.5px;color:var(--muted);}
+
+.hero{padding:50px 0 6px;}
+.hero h1{font-size:clamp(26px,4.4vw,38px);font-weight:700;letter-spacing:-0.01em;}
+.hero h1 .grn{color:var(--green);}
+.hero p{color:var(--muted);max-width:680px;margin-top:10px;font-size:15px;}
+.hero p code{font-family:var(--mono);font-size:13px;color:var(--green);}
+
+.layout{display:grid;grid-template-columns:1fr 300px;gap:20px;padding:32px 0 20px;align-items:start;}
+.canvas-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;}
+.canvas-head{display:flex;align-items:center;gap:8px;padding:11px 14px;background:var(--panel-2);border-bottom:1px solid var(--line);}
+.dot{width:11px;height:11px;border-radius:50%;}
+.dot.r{background:#ff5f57;}.dot.y{background:#febc2e;}.dot.g{background:#28c840;}
+.canvas-title{margin-left:8px;font-family:var(--mono);font-size:11.5px;color:var(--muted);}
+#field{display:block;width:100%;height:auto;cursor:crosshair;}
+.canvas-foot{
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px 18px;
+  padding:10px 14px;border-top:1px solid var(--line);
+  font-family:var(--mono);font-size:11.5px;color:var(--muted);
+}
+.canvas-foot b{color:var(--text);font-weight:500;}
+.legend{display:flex;gap:14px;align-items:center;}
+.swatch{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:0;}
+
+/* sidebar */
+.side{display:flex;flex-direction:column;gap:14px;}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;}
+.panel h3{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;font-weight:500;}
+.panel canvas{display:block;width:100%;height:auto;}
+
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.ctl{
+  font-family:var(--mono);font-size:12px;cursor:pointer;
+  background:var(--panel-2);border:1px solid var(--line);color:var(--text);
+  padding:9px 10px;border-radius:7px;transition:transform .12s, border-color .12s;
+}
+.ctl:hover{transform:translateY(-1px);border-color:var(--cyan);}
+.ctl.mode-active[data-mode="a"]{border-color:var(--green);color:var(--green);box-shadow:0 0 0 1px rgba(74,222,128,0.3) inset;}
+.ctl.mode-active[data-mode="b"]{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 0 1px rgba(56,189,248,0.3) inset;}
+.ctl.mode-active[data-mode="erase"]{border-color:var(--red);color:var(--red);}
+.ctl.train-on{border-color:var(--green);color:var(--green);font-weight:700;}
+.hint{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:10px;opacity:.8;line-height:1.7;}
+footer{padding:10px 0 50px;}
+footer p{font-family:var(--mono);font-size:11.5px;color:var(--muted);text-align:center;}
+@media (max-width:880px){.layout{grid-template-columns:1fr;}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important;}}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="nav-mark" href="../"><span class="c1">~/</span>dima<span class="c2">.livak</span></a>
+    <a class="nav-back" href="../">&larr; back to portfolio</a>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="hero">
+    <h1>neural net <span class="grn">playground</span></h1>
+    <p>A real <code>2 → 4 → 1</code> network (tanh hidden, sigmoid output) trained live in your browser with online backpropagation. Click the field to place data points, then watch the decision boundary, weights and loss update as it learns. No libraries — just <code>canvas</code> and calculus.</p>
+  </section>
+
+  <div class="layout">
+    <div class="canvas-card">
+      <div class="canvas-head">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="canvas-title">decision_boundary — click to add points</span>
+      </div>
+      <canvas id="field" width="640" height="480"></canvas>
+      <div class="canvas-foot">
+        <span class="legend">
+          <span><span class="swatch" style="background:var(--green)"></span>class A</span>
+          <span><span class="swatch" style="background:var(--cyan)"></span>class B</span>
+        </span>
+        <span>step <b id="stat-step">0</b> · acc <b id="stat-acc">—</b> · points <b id="stat-pts">0</b></span>
+      </div>
+    </div>
+
+    <div class="side">
+      <div class="panel">
+        <h3>controls</h3>
+        <div class="controls">
+          <button class="ctl mode-active" data-mode="a">● place A</button>
+          <button class="ctl" data-mode="b">● place B</button>
+          <button class="ctl" data-mode="erase">✕ erase</button>
+          <button class="ctl" id="btn-spawn">+ spawn 40 pts</button>
+          <button class="ctl train-on" id="btn-train">❚❚ pause training</button>
+          <button class="ctl" id="btn-reset">↺ reset weights</button>
+          <button class="ctl" id="btn-clear">⌫ clear points</button>
+          <button class="ctl" id="btn-steps">▶ train 100 steps</button>
+        </div>
+        <p class="hint">// click: add point of active class<br>// the network learns 4 random samples per frame (sgd, lr 0.06)</p>
+      </div>
+
+      <div class="panel">
+        <h3>weights — live</h3>
+        <canvas id="weights" width="280" height="150"></canvas>
+      </div>
+
+      <div class="panel">
+        <h3>loss — last 240 steps</h3>
+        <canvas id="loss" width="280" height="70"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <footer><p>part of the dima.livak portfolio · plain js, no ml frameworks</p></footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var CW = 640, CH = 480;
+  var field = document.getElementById("field");
+  var fctx = field.getContext("2d");
+  var wctx = document.getElementById("weights").getContext("2d");
+  var lctx = document.getElementById("loss").getContext("2d");
+  var GW = 52, GH = 30;
+  var off = document.createElement("canvas");
+  off.width = GW; off.height = GH;
+  var octx = off.getContext("2d");
+  var img = octx.createImageData(GW, GH);
+
+  /* ---------- network: 2 -> 4 (tanh) -> 1 (sigmoid) ---------- */
+  var H = 4;
+  var W1, B1, W2, B2;
+
+  function randn() {
+    var u = 0, v = 0;
+    while (u === 0) u = Math.random();
+    while (v === 0) v = Math.random();
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+  }
+
+  function initNet() {
+    W1 = []; B1 = [];
+    for (var j = 0; j < H; j++) {
+      W1.push([randn() * 0.6, randn() * 0.6]);
+      B1.push(randn() * 0.3);
+    }
+    W2 = [];
+    for (var k = 0; k < H; k++) W2.push(randn() * 0.6);
+    B2 = [0];
+  }
+
+  function sigmoid(z) { return 1 / (1 + Math.exp(-z)); }
+
+  function forward(x) {
+    var h = [], j;
+    for (j = 0; j < H; j++) {
+      h.push(Math.tanh(W1[j][0] * x[0] + W1[j][1] * x[1] + B1[j]));
+    }
+    var z = B2[0];
+    for (j = 0; j < H; j++) z += W2[j] * h[j];
+    return { h: h, p: sigmoid(z) };
+  }
+
+  function trainStep(x, y, lr) {
+    var f = forward(x);
+    var err = f.p - y;
+    var j;
+    for (j = 0; j < H; j++) {
+      var dh = err * W2[j] * (1 - f.h[j] * f.h[j]);
+      W1[j][0] += -lr * dh * x[0] - 1e-4 * W1[j][0];
+      W1[j][1] += -lr * dh * x[1] - 1e-4 * W1[j][1];
+      B1[j] += -lr * dh - 1e-4 * B1[j];
+      W2[j] += -lr * err * f.h[j] - 1e-4 * W2[j];
+    }
+    B2[0] += -lr * err;
+    var clip = Math.min(Math.max(f.p, 1e-6), 1 - 1e-6);
+    return -(y * Math.log(clip) + (1 - y) * Math.log(1 - clip));
+  }
+
+  /* ---------- data ---------- */
+  var points = [];
+
+  function spawnClusters() {
+    points = [];
+    function cluster(cx, cy, label) {
+      for (var i = 0; i < 20; i++) {
+        points.push({ x: cx + randn() * 0.11, y: cy + randn() * 0.11, label: label });
+      }
+    }
+    cluster(0.30, 0.34, 1);
+    cluster(0.70, 0.66, 0);
+  }
+
+  /* ---------- state ---------- */
+  var stepCount = 0;
+  var training = true;
+  var lossHist = [];
+  var mode = "a";
+
+  /* ---------- drawing ---------- */
+  var CA = { r: 74, g: 222, b: 128 };   // green = class A
+  var CB = { r: 56, g: 189, b: 248 };   // cyan  = class B
+
+  function drawBoundary() {
+    var d = img.data, idx = 0, gy, gx;
+    for (gy = 0; gy < GH; gy++) {
+      for (gx = 0; gx < GW; gx++) {
+        var x = (gx + 0.5) / GW, y = (gy + 0.5) / GH;
+        var f = forward([x, y]);
+        var p = f.p;
+        var r = CB.r + (CA.r - CB.r) * p;
+        var g = CB.g + (CA.g - CB.g) * p;
+        var b = CB.b + (CA.b - CB.b) * p;
+        var edge = 1 - Math.min(1, Math.abs(p - 0.5) * 4);
+        var a = 42 + 70 * p * (1 - p) * 4 * 0.5 + edge * 26;
+        d[idx] = r; d[idx + 1] = g; d[idx + 2] = b; d[idx + 3] = Math.min(150, a);
+        idx += 4;
+      }
+    }
+    octx.putImageData(img, 0, 0);
+  }
+
+  function drawField() {
+    fctx.fillStyle = "#0d1320";
+    fctx.fillRect(0, 0, CW, CH);
+    fctx.imageSmoothingEnabled = true;
+    fctx.drawImage(off, 0, 0, CW, CH);
+
+    var i, p;
+    for (i = 0; i < points.length; i++) {
+      p = points[i];
+      fctx.beginPath();
+      fctx.arc(p.x * CW, p.y * CH, 6, 0, Math.PI * 2);
+      fctx.fillStyle = p.label === 1 ? "#4ade80" : "#38bdf8";
+      fctx.fill();
+      fctx.lineWidth = 2;
+      fctx.strokeStyle = "rgba(10,14,20,0.9)";
+      fctx.stroke();
+    }
+  }
+
+  function drawWeights() {
+    var w = 280, h = 150;
+    wctx.clearRect(0, 0, w, h);
+    var inX = 30, hidX = 140, outX = 250;
+    var inY = [45, 105], hidY = [26, 58, 92, 124], outY = [75];
+    var j, i2;
+
+    wctx.lineCap = "round";
+    for (j = 0; j < H; j++) {
+      for (i2 = 0; i2 < 2; i2++) {
+        var wv = W1[j][i2];
+        wctx.strokeStyle = wv >= 0 ? "rgba(74,222,128," + Math.min(0.9, 0.12 + Math.abs(wv) * 0.4) + ")" : "rgba(248,113,113," + Math.min(0.9, 0.12 + Math.abs(wv) * 0.4) + ")";
+        wctx.lineWidth = Math.min(6, 0.8 + Math.abs(wv) * 1.8);
+        wctx.beginPath();
+        wctx.moveTo(inX, inY[i2]);
+        wctx.lineTo(hidX, hidY[j]);
+        wctx.stroke();
+      }
+      var w3 = W2[j];
+      wctx.strokeStyle = w3 >= 0 ? "rgba(74,222,128," + Math.min(0.9, 0.12 + Math.abs(w3) * 0.4) + ")" : "rgba(248,113,113," + Math.min(0.9, 0.12 + Math.abs(w3) * 0.4) + ")";
+      wctx.lineWidth = Math.min(6, 0.8 + Math.abs(w3) * 1.8);
+      wctx.beginPath();
+      wctx.moveTo(hidX, hidY[j]);
+      wctx.lineTo(outX, outY[0]);
+      wctx.stroke();
+    }
+
+    function node(x, y, c) {
+      wctx.beginPath();
+      wctx.arc(x, y, 7, 0, Math.PI * 2);
+      wctx.fillStyle = c;
+      wctx.fill();
+      wctx.lineWidth = 2;
+      wctx.strokeStyle = "#0d1320";
+      wctx.stroke();
+    }
+    for (i2 = 0; i2 < 2; i2++) node(inX, inY[i2], "#7f8ba0");
+    for (j = 0; j < H; j++) node(hidX, hidY[j], "#fbbf24");
+    node(outX, outY[0], "#dce3ee");
+
+    wctx.font = "10px 'JetBrains Mono', monospace";
+    wctx.fillStyle = "#7f8ba0";
+    wctx.fillText("x1", inX - 4, inY[0] - 14);
+    wctx.fillText("x2", inX - 4, inY[1] + 20);
+    wctx.fillText("out", outX - 12, outY[0] - 14);
+  }
+
+  function drawLoss() {
+    var w = 280, h = 70;
+    lctx.clearRect(0, 0, w, h);
+    lctx.strokeStyle = "#1f2a3d";
+    lctx.lineWidth = 1;
+    lctx.strokeRect(0.5, 0.5, w - 1, h - 1);
+    if (lossHist.length < 2) return;
+    var max = 0.05;
+    var i;
+    for (i = 0; i < lossHist.length; i++) if (lossHist[i] > max) max = lossHist[i];
+    lctx.beginPath();
+    for (i = 0; i < lossHist.length; i++) {
+      var x = (i / (240 - 1)) * (w - 8) + 4;
+      var y = h - 6 - (lossHist[i] / max) * (h - 14);
+      if (i === 0) lctx.moveTo(x, y); else lctx.lineTo(x, y);
+    }
+    lctx.strokeStyle = "#4ade80";
+    lctx.lineWidth = 1.6;
+    lctx.stroke();
+    lctx.font = "9px 'JetBrains Mono', monospace";
+    lctx.fillStyle = "#7f8ba0";
+    lctx.fillText("max " + max.toFixed(3), 6, 12);
+  }
+
+  function accuracy() {
+    if (points.length === 0) return null;
+    var correct = 0;
+    for (var i = 0; i < points.length; i++) {
+      var p = points[i];
+      var f = forward([p.x, p.y]);
+      if ((f.p > 0.5 ? 1 : 0) === p.label) correct++;
+    }
+    return Math.round(100 * correct / points.length);
+  }
+
+  function updateStats() {
+    document.getElementById("stat-step").textContent = stepCount;
+    document.getElementById("stat-pts").textContent = points.length;
+    var acc = accuracy();
+    document.getElementById("stat-acc").textContent = acc === null ? "—" : acc + "%";
+  }
+
+  /* ---------- training loop ---------- */
+  var frame = 0;
+  function tick() {
+    if (training && points.length > 1) {
+      var lossSum = 0, n = 4;
+      for (var s = 0; s < n; s++) {
+        var p = points[Math.floor(Math.random() * points.length)];
+        lossSum += trainStep([p.x, p.y], p.label, 0.06);
+        stepCount++;
+      }
+      lossHist.push(lossSum / n);
+      if (lossHist.length > 240) lossHist.shift();
+    }
+    frame++;
+    if (frame % 5 === 0) drawBoundary();
+    drawField();
+    drawWeights();
+    if (frame % 3 === 0) drawLoss();
+    if (frame % 12 === 0) updateStats();
+    if (!reduced) requestAnimationFrame(tick);
+  }
+
+  function renderOnce() {
+    drawBoundary();
+    drawField();
+    drawWeights();
+    drawLoss();
+    updateStats();
+  }
+
+  function runSteps(n) {
+    if (points.length < 2) return;
+    for (var s = 0; s < n; s++) {
+      var p = points[Math.floor(Math.random() * points.length)];
+      var loss = trainStep([p.x, p.y], p.label, 0.06);
+      stepCount++;
+      lossHist.push(loss);
+      if (lossHist.length > 240) lossHist.shift();
+    }
+    renderOnce();
+  }
+
+  /* ---------- interaction ---------- */
+  field.addEventListener("click", function (e) {
+    var r = field.getBoundingClientRect();
+    var x = (e.clientX - r.left) / r.width;
+    var y = (e.clientY - r.top) / r.height;
+    x = Math.min(0.98, Math.max(0.02, x));
+    y = Math.min(0.98, Math.max(0.02, y));
+    if (mode === "erase") {
+      var best = -1, bd = 0.05;
+      for (var i = 0; i < points.length; i++) {
+        var d = Math.sqrt(Math.pow(points[i].x - x, 2) + Math.pow(points[i].y - y, 2));
+        if (d < bd) { bd = d; best = i; }
+      }
+      if (best >= 0) points.splice(best, 1);
+    } else {
+      points.push({ x: x, y: y, label: mode === "a" ? 1 : 0 });
+    }
+    if (reduced) renderOnce();
+    else updateStats();
+  });
+
+  document.querySelectorAll(".ctl[data-mode]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      mode = btn.getAttribute("data-mode");
+      document.querySelectorAll(".ctl[data-mode]").forEach(function (b) {
+        b.classList.toggle("mode-active", b === btn);
+      });
+    });
+  });
+
+  document.getElementById("btn-train").addEventListener("click", function () {
+    training = !training;
+    this.textContent = training ? "❚❚ pause training" : "▶ resume training";
+    this.classList.toggle("train-on", training);
+    if (reduced && training) { training = false; this.textContent = "▶ resume training"; }
+  });
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    initNet(); stepCount = 0; lossHist = [];
+    if (reduced) renderOnce();
+  });
+  document.getElementById("btn-clear").addEventListener("click", function () {
+    points = [];
+    if (reduced) renderOnce(); else updateStats();
+  });
+  document.getElementById("btn-spawn").addEventListener("click", function () {
+    spawnClusters();
+    if (reduced) renderOnce(); else updateStats();
+  });
+  document.getElementById("btn-steps").addEventListener("click", function () {
+    runSteps(100);
+  });
+
+  /* ---------- boot ---------- */
+  initNet();
+  spawnClusters();
+  if (reduced) {
+    training = false;
+    document.getElementById("btn-train").textContent = "▶ resume training";
+    document.getElementById("btn-train").classList.remove("train-on");
+    runSteps(300);
+  } else {
+    requestAnimationFrame(tick);
+  }
+})();
+</script>
+</body>
+</html>
