@@ -2,7 +2,7 @@
 
 Personal portfolio for **Dima Livak**, a Computer Science & AI student (University of Kent), hosted on GitHub Pages.
 
-A dark, terminal-styled single-page site with a self-typing hero, an animated neural-network background, and — most importantly — **three live, interactive demos** that run entirely in the browser (no backend).
+A cyber-minimalist single-page site (dark by default, with a light-theme toggle) with a live terminal widget, status panel, an animated neural-network background, and — most importantly — **three live, interactive demos** that run entirely in the browser (no backend).
 
 ## Live demos
 
@@ -16,7 +16,9 @@ A dark, terminal-styled single-page site with a self-typing hero, an animated ne
 
 ```
 .
-├── index.html                 # portfolio home (hero, about, experience, demos, skills, education, contact)
+├── index.html                 # portfolio home (hero, about, experience, projects, stack, education, contact)
+├── style.css                  # design tokens (dark default + light theme), layout, animations
+├── script.js                  # terminal boot sequence, theme toggle, background canvas, reveals
 ├── favicon.svg
 ├── Dima_Livak_CV.pdf          # downloadable CV
 └── projects/
