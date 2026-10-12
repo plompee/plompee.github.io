@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Murmuration — Demo | Dima Livak</title>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #060a14; --fg: #f3f1ec; --mute: #8b8a96; --line: rgba(255,255,255,.12); --a1: #4f8cff; --a2: #7dd3fc; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--fg); font: 400 15px/1.5 "Inter", system-ui, sans-serif; }
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; cursor: crosshair; touch-action: none; }
+  .ui { position: fixed; z-index: 1; }
+  .top { top: 24px; left: 24px; right: 24px; display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; pointer-events: none; }
+  .top > * { pointer-events: auto; }
+  h1 { font: 800 clamp(2rem, 6vw, 4.5rem)/.9 "Syne", sans-serif; letter-spacing: -.03em; text-transform: uppercase; }
+  .sub { color: var(--mute); max-width: 420px; margin-top: 12px; }
+  .back { font: 500 13px "JetBrains Mono", monospace; color: var(--fg); text-decoration: none; padding: 9px 16px; border: 1px solid var(--line); border-radius: 99px; background: rgba(0,0,0,.4); backdrop-filter: blur(8px); white-space: nowrap; }
+  .back:hover { border-color: var(--a2); color: var(--a2); }
+  .panel {
+    bottom: 24px; left: 50%; transform: translateX(-50%); width: min(860px, calc(100% - 32px));
+    display: grid; grid-template-columns: repeat(4, 1fr) auto; gap: 18px 24px; align-items: end; padding: 20px 24px;
+    background: rgba(17,17,24,.72); backdrop-filter: blur(14px); border: 1px solid var(--line); border-radius: 22px;
+  }
+  label { display: grid; gap: 8px; font: 500 12px "JetBrains Mono", monospace; text-transform: uppercase; letter-spacing: .08em; color: var(--mute); }
+  label b { color: var(--fg); font-weight: 500; float: right; }
+  input[type=range] { width: 100%; accent-color: var(--a1); }
+  button { font: 600 14px "Inter", sans-serif; padding: 12px 20px; border-radius: 99px; border: 0; cursor: pointer; background: var(--fg); color: var(--bg); }
+  button:hover { background: linear-gradient(90deg, var(--a1), var(--a2)); color: #fff; }
+  .hint { position: fixed; bottom: 150px; left: 50%; transform: translateX(-50%); font: 500 12px "JetBrains Mono", monospace; color: var(--mute); pointer-events: none; transition: opacity 1s; white-space: nowrap; }
+  .mini .ui, .mini .hint { display: none; }
+  @media (max-width: 700px) {
+    .panel { grid-template-columns: 1fr 1fr; padding: 16px; gap: 14px; }
+    .panel button { grid-column: span 2; }
+    .sub { display: none; }
+    .hint { bottom: 250px; }
+  }
+</style>
+</head>
+<body>
+<canvas id="sky"></canvas>
+
+<header class="ui top">
+  <div>
+    <h1>Murmuration</h1>
+    <p class="sub">Every bird follows just three local rules — keep space, match heading, stay close. The flock you see is emergent: nobody is in charge.</p>
+  </div>
+  <a class="back" href="../index.html#projects">← Portfolio</a>
+</header>
+
+<p class="hint" id="hint">move your mouse — you're the falcon</p>
+
+<div class="ui panel">
+  <label>Separation <b id="v-sep"></b><input type="range" id="sep" min="0" max="3" step=".05" value="1.4"></label>
+  <label>Alignment <b id="v-ali"></b><input type="range" id="ali" min="0" max="3" step=".05" value="1"></label>
+  <label>Cohesion <b id="v-coh"></b><input type="range" id="coh" min="0" max="3" step=".05" value="1"></label>
+  <label>Birds <b id="v-n"></b><input type="range" id="n" min="200" max="4000" step="100" value="1800"></label>
+  <button id="scatter" type="button">Scatter</button>
+</div>
+
+<script>
+(() => {
+  const mini = new URLSearchParams(location.search).has("mini");
+  if (mini) document.body.classList.add("mini");
+
+  const cv = document.getElementById("sky"), ctx = cv.getContext("2d");
+  const R = 34, SEP_R = 14, MAX = 4000, BUCKETS = 14;
+  const x = new Float32Array(MAX), y = new Float32Array(MAX), vx = new Float32Array(MAX), vy = new Float32Array(MAX);
+  const next = new Int32Array(MAX);
+  let W, H, dpr, cols, rows, head, n = mini ? 260 : 1800;
+  const p = { sep: 1.4, ali: 1, coh: 1 };
+  const falcon = { x: -999, y: -999, active: false };
+
+  function resize() {
+    dpr = mini ? 1 : Math.min(devicePixelRatio || 1, 2);
+    W = innerWidth; H = innerHeight;
+    cv.width = W * dpr; cv.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    cols = Math.ceil(W / R); rows = Math.ceil(H / R);
+    head = new Int32Array(cols * rows);
+  }
+  function spawn(i) {
+    x[i] = Math.random() * W; y[i] = Math.random() * H;
+    const a = Math.random() * Math.PI * 2;
+    vx[i] = Math.cos(a) * 2; vy[i] = Math.sin(a) * 2;
+  }
+  resize();
+  for (let i = 0; i < MAX; i++) spawn(i);
+  addEventListener("resize", resize);
+
+  // Controls
+  ["sep", "ali", "coh"].forEach((k) => {
+    const el = document.getElementById(k), out = document.getElementById("v-" + k);
+    const set = () => { p[k] = +el.value; out.textContent = (+el.value).toFixed(2); };
+    el.addEventListener("input", set); set();
+  });
+  const nEl = document.getElementById("n"), nOut = document.getElementById("v-n");
+  const setN = () => { n = +nEl.value; nOut.textContent = n; };
+  if (!mini) { nEl.addEventListener("input", setN); setN(); }
+  document.getElementById("scatter").addEventListener("click", () => { for (let i = 0; i < n; i++) spawn(i); });
+
+  const hint = document.getElementById("hint");
+  addEventListener("pointermove", (e) => { falcon.x = e.clientX; falcon.y = e.clientY; falcon.active = true; hint.style.opacity = 0; });
+  addEventListener("pointerleave", () => { falcon.active = false; });
+
+  function step(t) {
+    if (mini) { // autonomous falcon for the preview card
+      falcon.active = true;
+      falcon.x = W / 2 + Math.sin(t * 0.0005) * W * 0.35;
+      falcon.y = H / 2 + Math.sin(t * 0.0008) * H * 0.3;
+    }
+    // Spatial hash: each cell holds a linked list of birds, so neighbour lookups stay cheap.
+    head.fill(-1);
+    for (let i = 0; i < n; i++) {
+      const c = Math.min(cols - 1, Math.max(0, (x[i] / R) | 0)) + Math.min(rows - 1, Math.max(0, (y[i] / R) | 0)) * cols;
+      next[i] = head[c]; head[c] = i;
+    }
+    for (let i = 0; i < n; i++) {
+      let ax = 0, ay = 0, cx = 0, cy = 0, sx = 0, sy = 0, k = 0;
+      const gx = (x[i] / R) | 0, gy = (y[i] / R) | 0;
+      for (let oy = -1; oy <= 1; oy++) for (let ox = -1; ox <= 1; ox++) {
+        const X = gx + ox, Y = gy + oy;
+        if (X < 0 || Y < 0 || X >= cols || Y >= rows) continue;
+        for (let j = head[X + Y * cols]; j !== -1; j = next[j]) {
+          if (j === i) continue;
+          const dx = x[j] - x[i], dy = y[j] - y[i], d2 = dx * dx + dy * dy;
+          if (d2 > R * R) continue;
+          ax += vx[j]; ay += vy[j]; cx += dx; cy += dy; k++;
+          if (d2 < SEP_R * SEP_R && d2 > 0) { sx -= dx / d2; sy -= dy / d2; }
+        }
+      }
+      if (k) {
+        vx[i] += (ax / k - vx[i]) * 0.05 * p.ali + (cx / k) * 0.0012 * p.coh;
+        vy[i] += (ay / k - vy[i]) * 0.05 * p.ali + (cy / k) * 0.0012 * p.coh;
+      }
+      vx[i] += sx * 0.9 * p.sep; vy[i] += sy * 0.9 * p.sep;
+      if (falcon.active) { // flee the predator
+        const dx = x[i] - falcon.x, dy = y[i] - falcon.y, d2 = dx * dx + dy * dy;
+        if (d2 < 150 * 150) { const f = 26 / (d2 + 100); vx[i] += dx * f; vy[i] += dy * f; }
+      }
+      const s = Math.hypot(vx[i], vy[i]) || 1, cl = Math.min(4.2, Math.max(1.6, s)) / s;
+      vx[i] *= cl; vy[i] *= cl;
+      x[i] = (x[i] + vx[i] + W) % W; y[i] = (y[i] + vy[i] + H) % H;
+    }
+  }
+
+  function draw() {
+    ctx.fillStyle = "rgba(6,10,20,0.22)"; // translucent wipe leaves motion trails
+    ctx.fillRect(0, 0, W, H);
+    ctx.lineWidth = 1.6; ctx.lineCap = "round";
+    // Colour by heading; one path per hue bucket keeps draw calls low.
+    for (let b = 0; b < BUCKETS; b++) {
+      ctx.strokeStyle = `hsl(${195 + (b / BUCKETS) * 45}, 95%, ${62 + (b / BUCKETS) * 16}%)`;
+      ctx.beginPath();
+      for (let i = 0; i < n; i++) {
+        const a = Math.atan2(vy[i], vx[i]);
+        if ((((a + Math.PI) / (Math.PI * 2)) * BUCKETS | 0) % BUCKETS !== b) continue;
+        ctx.moveTo(x[i], y[i]); ctx.lineTo(x[i] - vx[i] * 2.2, y[i] - vy[i] * 2.2);
+      }
+      ctx.stroke();
+    }
+    if (falcon.active) {
+      const g = ctx.createRadialGradient(falcon.x, falcon.y, 0, falcon.x, falcon.y, 40);
+      g.addColorStop(0, "rgba(220,235,255,.9)"); g.addColorStop(1, "rgba(79,140,255,0)");
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(falcon.x, falcon.y, 40, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+
+  (function loop(t) { step(t); draw(); requestAnimationFrame(loop); })(0);
+})();
+</script>
+</body>
+</html>

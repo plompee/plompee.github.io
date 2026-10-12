@@ -2,7 +2,7 @@
 
 Personal portfolio for **Dima Livak**, a Computer Science & AI student (University of Kent), hosted on GitHub Pages.
 
-A cyber-minimalist single-page site (dark by default, with a light-theme toggle) with a live terminal widget, status panel, an animated neural-network background, and — most importantly — **three live, interactive demos** that run entirely in the browser (no backend).
+A clean, dark single-page site with a lightweight WebGL hero (Three.js), a sticky navigation bar that highlights the current section, and — most importantly — **four live, interactive demos** that run entirely in the browser (no backend).
 
 ## Live demos
 
@@ -10,20 +10,22 @@ A cyber-minimalist single-page site (dark by default, with a light-theme toggle)
 |------|------|--------------|
 | **AI call triage** | `projects/call-triage.html` | A recreation of the call-routing system built at Apex27. Play a preset caller (or type your own) and watch it get "transcribed", scored against intent patterns, and routed in real time. |
 | **Neural net playground** | `projects/neural-net.html` | A real `2→4→1` backprop network trained live in the browser. Place data points on a canvas and watch the decision boundary, weights, and loss update per frame. No ML frameworks. |
+| **Murmuration** | `projects/murmuration.html` | Thousands of boids flocking with separation, alignment and cohesion, using a spatial hash for fast neighbour lookups. Your cursor is a falcon the flock flees from; sliders change the rules live. |
 | **Estate agency website** | `projects/estate-agency/` | A complete estate agency site (search, filters, sort, pagination, property pages, valuation & contact forms) running 100% client-side on a real data snapshot of the Apex27 Portal API. |
 
 ## Structure
 
 ```
 .
-├── index.html                 # portfolio home (hero, about, experience, projects, stack, education, contact)
-├── style.css                  # design tokens (dark default + light theme), layout, animations
-├── script.js                  # terminal boot sequence, theme toggle, background canvas, reveals
+├── index.html                 # portfolio home (hero, about, experience, projects, skills, education, contact)
+├── style.css                  # design tokens, layout, responsive nav, project visuals
+├── script.js                  # nav (active section, mobile menu), scroll reveals, WebGL hero
 ├── favicon.svg
 ├── Dima_Livak_CV.pdf          # downloadable CV
 └── projects/
     ├── call-triage.html
     ├── neural-net.html
+    ├── murmuration.html
     └── estate-agency/
         ├── index.html         # home: hero search, featured, stats
         ├── listings.html      # search + filters + sort + pagination

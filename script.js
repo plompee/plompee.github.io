@@ -1,324 +1,132 @@
-(function () {
-  "use strict";
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
 
-  var root = document.documentElement;
-  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+window.__ready = true;
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => [...document.querySelectorAll(s)];
 
-  function cssVar(name) {
-    return getComputedStyle(root).getPropertyValue(name).trim();
-  }
+/* ---------- Navigation: solid bar on scroll, active section, mobile menu ---------- */
+const nav = $("#nav"), menuBtn = $("#menu-btn"), links = $("#nav-links");
+const onScroll = () => nav.classList.toggle("scrolled", scrollY > 10);
+addEventListener("scroll", onScroll, { passive: true });
+onScroll();
 
-  /* ---------- Theme toggle ---------- */
-  var themeBtn = document.getElementById("theme-toggle");
-  var themeMeta = document.querySelector('meta[name="theme-color"]');
+function setMenu(open) {
+  links.classList.toggle("open", open);
+  menuBtn.setAttribute("aria-expanded", open);
+  menuBtn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+}
+menuBtn.addEventListener("click", () => setMenu(!links.classList.contains("open")));
+links.addEventListener("click", (e) => { if (e.target.closest("a")) setMenu(false); });
+addEventListener("keydown", (e) => { if (e.key === "Escape") setMenu(false); });
 
-  function applyTheme(theme) {
-    root.setAttribute("data-theme", theme);
-    themeBtn.setAttribute("aria-label", theme === "dark" ? "Switch to light theme" : "Switch to dark theme");
-    if (themeMeta) themeMeta.setAttribute("content", theme === "dark" ? "#05070a" : "#f5f7fa");
-    readCanvasColors();
-  }
+const navLinks = $$(".nav-links a");
+const sectionObserver = new IntersectionObserver((entries) => entries.forEach((e) => {
+  if (e.isIntersecting) navLinks.forEach((a) => a.classList.toggle("active", a.hash === "#" + e.target.id));
+}), { rootMargin: "-45% 0px -50% 0px" });
+$$("main section[id]").forEach((s) => sectionObserver.observe(s));
 
-  themeBtn.addEventListener("click", function () {
-    var next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
-    applyTheme(next);
-    try { localStorage.setItem("theme", next); } catch (e) { /* storage unavailable */ }
-  });
+/* ---------- Scroll reveals ---------- */
+const revealObserver = new IntersectionObserver((entries) => entries.forEach((e) => {
+  if (!e.isIntersecting) return;
+  e.target.classList.add("on");
+  revealObserver.unobserve(e.target);
+}), { threshold: 0.12 });
+$$("[data-r]").forEach((el) => revealObserver.observe(el));
 
-  /* ---------- Mobile menu + nav state ---------- */
-  var nav = document.getElementById("nav");
-  var menuBtn = document.getElementById("menu-toggle");
-  var links = document.getElementById("nav-links");
+/* ---------- Project visuals: built once, animated only while on screen ---------- */
+$$(".wave").forEach((w) => { for (let i = 0; i < 28; i++) w.insertAdjacentHTML("beforeend", `<i style="--d:${Math.random() * 1.1}"></i>`); });
+$$(".city").forEach((c) => { for (let i = 0; i < 12; i++) c.insertAdjacentHTML("beforeend", `<i style="--h:${30 + Math.random() * 70}%;--d:${Math.random() * 3}"></i>`); });
+$$(".net").forEach((svg) => {
+  const pts = [3, 5, 5, 2].map((n, l) => Array.from({ length: n }, (_, i) => [30 + l * 80, 100 + (i - (n - 1) / 2) * 38]));
+  let h = "";
+  pts.slice(1).forEach((layer, l) => layer.forEach((b) => pts[l].forEach((a) => {
+    h += `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" class="${Math.random() < 0.3 ? "hot" : ""}"/>`;
+  })));
+  pts.flat().forEach((p) => { h += `<circle cx="${p[0]}" cy="${p[1]}" r="8"/>`; });
+  svg.innerHTML = h;
+});
+// The Murmuration preview is a live simulation, so its iframe only exists while the card is visible.
+const visualObserver = new IntersectionObserver((entries) => entries.forEach((e) => {
+  const el = e.target, src = el.dataset.preview;
+  el.classList.toggle("live", e.isIntersecting);
+  if (!src) return;
+  if (e.isIntersecting && !el.firstChild) el.innerHTML = `<iframe src="${src}" title="Live preview" tabindex="-1"></iframe>`;
+  else if (!e.isIntersecting) el.replaceChildren();
+}), { rootMargin: "100px" });
+$$(".pvis").forEach((el) => visualObserver.observe(el));
 
-  function setMenu(open) {
-    links.classList.toggle("open", open);
-    menuBtn.setAttribute("aria-expanded", String(open));
-    menuBtn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
-  }
-  menuBtn.addEventListener("click", function () {
-    setMenu(!links.classList.contains("open"));
-  });
-  links.addEventListener("click", function (e) {
-    if (e.target.closest("a")) setMenu(false);
-  });
-  document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape") setMenu(false);
-  });
+/* ---------- Hero: lightweight WebGL blob ---------- */
+const canvas = $("#gl");
+let renderer;
+try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "low-power" }); } catch { renderer = null; }
 
-  window.addEventListener("scroll", function () {
-    nav.classList.toggle("scrolled", window.scrollY > 8);
-  }, { passive: true });
+if (renderer) {
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+  camera.position.z = 6;
+  const uniforms = { uTime: { value: 0 }, uMouse: { value: new THREE.Vector2() } };
 
-  /* ---------- Neural network background ---------- */
-  var canvas = document.getElementById("neural");
-  var ctx = canvas.getContext("2d");
-  var nodes = [];
-  var W = 0, H = 0;
-  var nodeRGB = "61, 255, 168", linkRGB = "34, 211, 238";
+  const blob = new THREE.Mesh(new THREE.IcosahedronGeometry(1.6, 24), new THREE.ShaderMaterial({
+    uniforms,
+    vertexShader: `
+      uniform float uTime; uniform vec2 uMouse;
+      varying float vD; varying vec3 vN, vV;
+      void main() {
+        vec3 p = position * .9 + vec3(uMouse, 0.) * .6;
+        float d = (sin(p.x * 2.1 + uTime * .8) * sin(p.y * 2.7 - uTime) * sin(p.z * 2.3 + uTime * .6)
+                + .4 * sin(p.x * 4.3 - uTime * 1.1 + p.y * 3.1) * sin(p.z * 4.7 + uTime * .7)) * .3;
+        vD = d;
+        vN = normalize(normalMatrix * normal);
+        vec4 mv = modelViewMatrix * vec4(position + normal * d, 1.);
+        vV = normalize(-mv.xyz);
+        gl_Position = projectionMatrix * mv;
+      }`,
+    fragmentShader: `
+      varying float vD; varying vec3 vN, vV;
+      void main() {
+        float f = pow(1. - max(dot(vN, vV), 0.), 2.);
+        float h = clamp(vD * 1.4 + .35 + f * .6, 0., 1.);
+        vec3 c = mix(vec3(.02, .04, .12), vec3(.12, .3, .85), smoothstep(0., .45, h));
+        c = mix(c, vec3(.5, .78, 1.), smoothstep(.45, .85, h));
+        c = mix(c, vec3(.95, .98, 1.), smoothstep(.88, 1., h));
+        gl_FragColor = vec4(c, 1.);
+      }`,
+  }));
+  scene.add(blob);
 
-  function readCanvasColors() {
-    nodeRGB = cssVar("--node") || nodeRGB;
-    linkRGB = cssVar("--link") || linkRGB;
-    if (reduced) drawFrame();
-  }
+  // Static star dust: positions are uploaded once and the whole cloud just rotates.
+  const pos = new Float32Array(400 * 3).map(() => (Math.random() - 0.5) * 10);
+  const dustGeo = new THREE.BufferGeometry();
+  dustGeo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+  const dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({ size: 0.03, color: 0x9cc4ff, transparent: true, opacity: 0.6, depthWrite: false }));
+  scene.add(dust);
 
-  function sizeCanvas() {
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    W = window.innerWidth;
-    H = window.innerHeight;
-    canvas.width = W * dpr;
-    canvas.height = H * dpr;
-    canvas.style.width = W + "px";
-    canvas.style.height = H + "px";
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
+  const resize = () => {
+    const w = canvas.clientWidth, h = canvas.clientHeight, wide = w > 960;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    blob.position.set(wide ? 2.6 : 0.6, wide ? 0 : 1.2, 0);
+    blob.scale.setScalar(wide ? 0.9 : 0.75);
+  };
+  resize();
+  addEventListener("resize", resize);
 
-  function initNodes() {
-    nodes = [];
-    var count = Math.min(70, Math.floor((W * H) / 18000));
-    for (var i = 0; i < count; i++) {
-      nodes.push({
-        x: Math.random() * W,
-        y: Math.random() * H,
-        vx: (Math.random() - 0.5) * 0.28,
-        vy: (Math.random() - 0.5) * 0.28,
-        r: Math.random() * 1.6 + 0.8
-      });
-    }
-  }
+  const mouse = { x: 0, y: 0 };
+  addEventListener("pointermove", (e) => { mouse.x = e.clientX / innerWidth - 0.5; mouse.y = e.clientY / innerHeight - 0.5; }, { passive: true });
 
-  function drawFrame() {
-    ctx.clearRect(0, 0, W, H);
-    var linkDist = 130;
-    for (var i = 0; i < nodes.length; i++) {
-      var a = nodes[i];
-      if (!reduced) {
-        a.x += a.vx;
-        a.y += a.vy;
-        if (a.x < -10) a.x = W + 10; else if (a.x > W + 10) a.x = -10;
-        if (a.y < -10) a.y = H + 10; else if (a.y > H + 10) a.y = -10;
-      }
-      for (var j = i + 1; j < nodes.length; j++) {
-        var b = nodes[j];
-        var dx = a.x - b.x, dy = a.y - b.y;
-        var d = Math.sqrt(dx * dx + dy * dy);
-        if (d < linkDist) {
-          ctx.strokeStyle = "rgba(" + linkRGB + "," + ((1 - d / linkDist) * 0.16).toFixed(3) + ")";
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(a.x, a.y);
-          ctx.lineTo(b.x, b.y);
-          ctx.stroke();
-        }
-      }
-    }
-    ctx.fillStyle = "rgba(" + nodeRGB + ", 0.5)";
-    for (var k = 0; k < nodes.length; k++) {
-      ctx.beginPath();
-      ctx.arc(nodes[k].x, nodes[k].y, nodes[k].r, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  }
-
-  function loop() {
-    if (!document.hidden) drawFrame();
-    requestAnimationFrame(loop);
-  }
-
-  sizeCanvas();
-  initNodes();
-  readCanvasColors();
-  if (reduced) drawFrame(); else requestAnimationFrame(loop);
-  window.addEventListener("resize", function () {
-    sizeCanvas();
-    initNodes();
-    if (reduced) drawFrame();
-  });
-
-  /* ---------- Terminal boot sequence ---------- */
-  var term = document.getElementById("term-body");
-  var PROMPT = '<span class="t-prompt">dima@kent:~$</span> ';
-  var OK = '<span class="t-ok">[ ok ]</span> ';
-  var script = [
-    { cmd: "plompee init --profile" },
-    { out: OK + "loading degree        <span class=\"t-dim\">bsc-cs-ai@kent</span>" },
-    { out: OK + "mounting experience   <span class=\"t-dim\">apex27/ai-automation</span>" },
-    { out: OK + "starting runtimes     <span class=\"t-dim\">python, javascript</span>" },
-    { out: OK + "demos online          <span class=\"t-dim\">3/3</span>" },
-    { out: '<span class="t-key">plompee init...</span> <span class="t-ok">completed</span>' },
-    { cmd: "whoami --json" },
-    { out: "{" },
-    { out: '  <span class="t-key">"name"</span>: <span class="t-str">"Dima Livak"</span>,' },
-    { out: '  <span class="t-key">"location"</span>: <span class="t-str">"Canterbury, UK"</span>,' },
-    { out: '  <span class="t-key">"skills"</span>: [<span class="t-str">"python"</span>, <span class="t-str">"javascript"</span>, <span class="t-str">"ai-automation"</span>],' },
-    { out: '  <span class="t-key">"status"</span>: <span class="t-str">"open_to_remote_part_time"</span>,' },
-    { out: '  <span class="t-key">"hours_per_week"</span>: <span class="t-num">20</span>' },
-    { out: "}" }
-  ];
-  var runId = 0;
-
-  function renderStatic() {
-    var html = "";
-    script.forEach(function (s) {
-      html += s.cmd ? PROMPT + '<span class="t-cmd">' + s.cmd + "</span>\n" : s.out + "\n";
-    });
-    term.innerHTML = html + PROMPT + '<span class="cursor"></span>';
-  }
-
-  function runTerminal() {
-    var id = ++runId;
-    var done = "";
-    var i = 0;
-
-    function alive() { return id === runId; }
-    function show(extra) { term.innerHTML = done + extra; }
-
-    function next() {
-      if (!alive()) return;
-      if (i >= script.length) {
-        show(PROMPT + '<span class="cursor"></span>');
-        return;
-      }
-      var s = script[i++];
-      if (s.out) {
-        done += s.out + "\n";
-        show("");
-        setTimeout(next, 110 + Math.random() * 120);
-        return;
-      }
-      var c = 0;
-      (function type() {
-        if (!alive()) return;
-        if (c <= s.cmd.length) {
-          show(PROMPT + '<span class="t-cmd">' + s.cmd.slice(0, c) + '</span><span class="cursor"></span>');
-          c++;
-          setTimeout(type, 45 + Math.random() * 55);
-        } else {
-          done += PROMPT + '<span class="t-cmd">' + s.cmd + "</span>\n";
-          setTimeout(next, 320);
-        }
-      })();
-    }
-
-    done = "";
-    show(PROMPT + '<span class="cursor"></span>');
-    setTimeout(next, 600);
-  }
-
-  if (reduced) renderStatic(); else runTerminal();
-  document.getElementById("term-replay").addEventListener("click", function () {
-    if (reduced) renderStatic(); else runTerminal();
-  });
-
-  /* ---------- Typewriter role cycler ---------- */
-  var roles = [
-    "computer science & AI student",
-    "AI automation builder",
-    "3 yrs of customer service",
-    "remote-work ready"
-  ];
-  var roleEl = document.getElementById("role-typed");
-
-  if (!reduced) {
-    var ri = 0, ci = roles[0].length, deleting = true;
-    var tick = function () {
-      var word = roles[ri];
-      if (deleting) {
-        ci--;
-        roleEl.textContent = word.slice(0, ci);
-        if (ci === 0) {
-          deleting = false;
-          ri = (ri + 1) % roles.length;
-          return setTimeout(tick, 350);
-        }
-        return setTimeout(tick, 32);
-      }
-      ci++;
-      roleEl.textContent = word.slice(0, ci);
-      if (ci === word.length) {
-        deleting = true;
-        return setTimeout(tick, 1900);
-      }
-      setTimeout(tick, 65 + Math.random() * 45);
-    };
-    setTimeout(tick, 2400);
-  }
-
-  /* ---------- Live UK clock ---------- */
-  var clockEl = document.getElementById("clock");
-  function updateClock() {
-    try {
-      clockEl.textContent = new Date().toLocaleTimeString("en-GB", {
-        hour: "2-digit", minute: "2-digit", timeZone: "Europe/London"
-      });
-    } catch (e) {
-      clockEl.textContent = "";
-    }
-  }
-  updateClock();
-  setInterval(updateClock, 15000);
-
-  /* ---------- Cursor spotlight on cards and tags ---------- */
-  document.addEventListener("pointermove", function (e) {
-    var card = e.target.closest && e.target.closest(".glow-card");
-    if (card) {
-      var r = card.getBoundingClientRect();
-      card.style.setProperty("--mx", (e.clientX - r.left) + "px");
-      card.style.setProperty("--my", (e.clientY - r.top) + "px");
-    }
-    var tag = e.target.closest && e.target.closest(".tags li");
-    if (tag) {
-      var t = tag.getBoundingClientRect();
-      tag.style.setProperty("--tx", (e.clientX - t.left) + "px");
-      tag.style.setProperty("--ty", (e.clientY - t.top) + "px");
-    }
-  }, { passive: true });
-
-  /* ---------- Scroll reveal, meters, active nav link ---------- */
-  var reveals = document.querySelectorAll(".reveal");
-  var meterGroups = document.querySelectorAll(".meters");
-
-  function fillMeters(group) {
-    group.querySelectorAll(".meter-bar i").forEach(function (f, idx) {
-      setTimeout(function () { f.style.width = f.getAttribute("data-w") + "%"; }, reduced ? 0 : idx * 120);
-    });
-  }
-
-  if ("IntersectionObserver" in window && !reduced) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) {
-          e.target.classList.add("visible");
-          io.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.12 });
-    reveals.forEach(function (el) { io.observe(el); });
-
-    var ioMeters = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) {
-          fillMeters(e.target);
-          ioMeters.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.4 });
-    meterGroups.forEach(function (g) { ioMeters.observe(g); });
-  } else {
-    reveals.forEach(function (el) { el.classList.add("visible"); });
-    meterGroups.forEach(fillMeters);
-  }
-
-  if ("IntersectionObserver" in window) {
-    var navLinks = links.querySelectorAll("a");
-    var ioNav = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        navLinks.forEach(function (a) {
-          a.classList.toggle("active", a.getAttribute("href") === "#" + e.target.id);
-        });
-      });
-    }, { rootMargin: "-45% 0px -50% 0px" });
-    document.querySelectorAll("main section[id]").forEach(function (s) { ioNav.observe(s); });
-  }
-})();
+  let visible = true;
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe($(".hero"));
+  const clock = new THREE.Clock();
+  const render = () => {
+    const t = clock.getElapsedTime(), m = uniforms.uMouse.value;
+    uniforms.uTime.value = t;
+    m.x += (mouse.x - m.x) * 0.04; m.y += (mouse.y - m.y) * 0.04;
+    blob.rotation.set(m.y * 0.5, t * 0.1 + m.x * 0.6, 0);
+    dust.rotation.y = t * 0.02;
+    renderer.render(scene, camera);
+  };
+  render();
+  renderer.setAnimationLoop(() => { if (visible) render(); });
+}
