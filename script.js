@@ -6,7 +6,7 @@ const $$ = (s) => [...document.querySelectorAll(s)];
 const nav = $("#nav"), menuBtn = $("#menu-btn"), links = $("#nav-links");
 const onScroll = () => nav.classList.toggle("scrolled", scrollY > 10);
 addEventListener("scroll", onScroll, { passive: true });
-onScroll();
+requestAnimationFrame(onScroll);
 
 function setMenu(open) {
   links.classList.toggle("open", open);
@@ -65,7 +65,7 @@ if (timeline) {
     timeline.style.setProperty("--fill", p.toFixed(3));
   };
   addEventListener("scroll", () => { if (!queued) { queued = true; requestAnimationFrame(fill); } }, { passive: true });
-  fill();
+  requestAnimationFrame(fill);
 }
 
 /* ---------- Contact: copy email ---------- */
@@ -161,7 +161,7 @@ function playFilm() {
 }
 addEventListener("scroll", () => { if (!filmQueued) { filmQueued = true; requestAnimationFrame(playFilm); } }, { passive: true });
 addEventListener("resize", playFilm);
-playFilm();
+requestAnimationFrame(playFilm);
 
 /* ---------- Hero: AI receptionist feed — each call types out, then gets its outcome ---------- */
 const CALLS = [
@@ -180,7 +180,7 @@ const whenVisible = async () => { while (!heroOn || document.hidden) await wait(
 (async function runFeed() {
   // Start after the page has loaded, so the typing doesn't compete with the first paint.
   if (document.readyState !== "complete") await new Promise((r) => addEventListener("load", r, { once: true }));
-  await wait(400);
+  await wait(1200); // after the first paint has settled
   for (;;) {
     await whenVisible();
     const c = CALLS[callIndex++ % CALLS.length];

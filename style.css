@@ -61,7 +61,7 @@ h1, h2, h3 { color: var(--fg); font-family: var(--display); letter-spacing: -.02
   background: radial-gradient(ellipse 60% 55% at 78% 45%, rgba(79, 140, 255, .18), transparent 70%), radial-gradient(ellipse 50% 40% at 10% 90%, rgba(125, 211, 252, .07), transparent 70%); }
 .hero::after { content: ""; position: absolute; inset: auto 0 0; height: 120px; background: linear-gradient(transparent, var(--bg)); pointer-events: none; }
 
-.feed { animation: up .9s var(--ease) both; }
+.feed { animation: none; }
 
 .feed { animation-delay: .3s; }
 @keyframes up { from { opacity: 0; transform: translateY(20px); } }
@@ -272,8 +272,8 @@ h1 em, h2 em, h3 em {
 /* background: slow aurora + fine grain (fixed, behind everything) */
 .aurora { position: fixed; inset: 0; z-index: -2; overflow: hidden; pointer-events: none; }
 .aurora::before, .aurora::after { content: ""; position: absolute; width: 70vmax; height: 70vmax; border-radius: 50%; will-change: transform; }
-.aurora::before { top: -35vmax; right: -20vmax; background: radial-gradient(circle, rgba(var(--glow1), .28), transparent 62%); animation: drift-a 26s ease-in-out infinite alternate; }
-.aurora::after { bottom: -40vmax; left: -25vmax; background: radial-gradient(circle, rgba(var(--glow2), .16), transparent 62%); animation: drift-b 32s ease-in-out infinite alternate; }
+.aurora::before { top: -35vmax; right: -20vmax; background: radial-gradient(circle, rgba(var(--glow1), .28), transparent 62%); animation: drift-a 26s ease-in-out 3s infinite alternate; }
+.aurora::after { bottom: -40vmax; left: -25vmax; background: radial-gradient(circle, rgba(var(--glow2), .16), transparent 62%); animation: drift-b 32s ease-in-out 3s infinite alternate; }
 @keyframes drift-a { to { transform: translate(-14vmax, 18vmax) scale(1.15); } }
 @keyframes drift-b { to { transform: translate(16vmax, -12vmax) scale(1.1); } }
 
@@ -379,11 +379,11 @@ h1 em, h2 em, h3 em {
 /* ---------- Bento hero ---------- */
 .hero { min-height: auto; display: block; padding: calc(var(--nav-h) + 28px) 24px 40px; }
 .bento { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; }
-.tile { border-radius: 26px; padding: 26px; min-width: 0; overflow: hidden; animation: up .9s cubic-bezier(.16, 1, .3, 1) both; }
+.tile { border-radius: 26px; padding: 26px; min-width: 0; overflow: hidden; }
 .t-intro { grid-column: span 7; grid-row: span 3; padding: clamp(28px, 4vw, 52px); display: flex; flex-direction: column; justify-content: center; }
-.t-feed { grid-column: span 5; grid-row: span 3; animation-delay: .1s; }
-.t-mini { grid-column: span 3; display: flex; flex-direction: column; gap: 4px; animation-delay: .2s; }
-.t-stack { grid-column: span 12; padding: 18px 0; animation-delay: .3s; }
+.t-feed { grid-column: span 5; grid-row: span 3; }
+.t-mini { grid-column: span 3; display: flex; flex-direction: column; gap: 4px; }
+.t-stack { grid-column: span 12; padding: 18px 0; }
 .t-intro .status { align-self: flex-start; }
 .t-intro h1 { font-size: clamp(3.2rem, 6.6vw, 6.2rem); margin: 22px 0 18px; }
 .t-intro .role { font-size: clamp(1.1rem, 1.7vw, 1.35rem); max-width: 540px; }
