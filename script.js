@@ -1,5 +1,3 @@
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
-
 window.__ready = true;
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
@@ -33,100 +31,103 @@ const revealObserver = new IntersectionObserver((entries) => entries.forEach((e)
 }), { threshold: 0.12 });
 $$("[data-r]").forEach((el) => revealObserver.observe(el));
 
-/* ---------- Project visuals: built once, animated only while on screen ---------- */
-$$(".wave").forEach((w) => { for (let i = 0; i < 28; i++) w.insertAdjacentHTML("beforeend", `<i style="--d:${Math.random() * 1.1}"></i>`); });
-$$(".city").forEach((c) => { for (let i = 0; i < 12; i++) c.insertAdjacentHTML("beforeend", `<i style="--h:${30 + Math.random() * 70}%;--d:${Math.random() * 3}"></i>`); });
-$$(".net").forEach((svg) => {
-  const pts = [3, 5, 5, 2].map((n, l) => Array.from({ length: n }, (_, i) => [30 + l * 80, 100 + (i - (n - 1) / 2) * 38]));
-  let h = "";
-  pts.slice(1).forEach((layer, l) => layer.forEach((b) => pts[l].forEach((a) => {
-    h += `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" class="${Math.random() < 0.3 ? "hot" : ""}"/>`;
-  })));
-  pts.flat().forEach((p) => { h += `<circle cx="${p[0]}" cy="${p[1]}" r="8"/>`; });
-  svg.innerHTML = h;
-});
-// The Murmuration preview is a live simulation, so its iframe only exists while the card is visible.
-const visualObserver = new IntersectionObserver((entries) => entries.forEach((e) => {
-  const el = e.target, src = el.dataset.preview;
-  el.classList.toggle("live", e.isIntersecting);
-  if (!src) return;
-  if (e.isIntersecting && !el.firstChild) el.innerHTML = `<iframe src="${src}" title="Live preview" tabindex="-1"></iframe>`;
-  else if (!e.isIntersecting) el.replaceChildren();
-}), { rootMargin: "100px" });
-$$(".pvis").forEach((el) => visualObserver.observe(el));
+/* ---------- Project card videos: load lazily, play only while on screen ---------- */
+const playIfAllowed = (v) => { const p = v.play(); if (p) p.catch(() => {}); };
+const cardObserver = new IntersectionObserver((entries) => entries.forEach((e) => {
+  const v = e.target;
+  if (!e.isIntersecting) { v.pause(); return; }
+  if (!v.src) v.src = v.dataset.src;
+  playIfAllowed(v);
+}), { threshold: 0.25 });
+$$(".pvid video").forEach((v) => cardObserver.observe(v));
 
-/* ---------- Hero: lightweight WebGL blob ---------- */
-const canvas = $("#gl");
-let renderer;
-try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "low-power" }); } catch { renderer = null; }
+/* ---------- Skills film: each scene plays forward/backward with the scrollbar ---------- */
+const clamp01 = (v) => Math.min(1, Math.max(0, v));
+const seg = (p, a, b) => clamp01((p - a) / (b - a)); // progress of p within the [a, b] slice of a scene
+const typeTo = (el, k) => { const t = el.dataset.text; el.textContent = t.slice(0, Math.round(t.length * k)); };
+const lerp = (a, b, k) => a + (b - a) * k;
 
-if (renderer) {
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-  camera.position.z = 6;
-  const uniforms = { uTime: { value: 0 }, uMouse: { value: new THREE.Vector2() } };
+const scenes = {
+  call(el, p) {
+    typeTo(el.querySelector(".typed"), seg(p, 0.08, 0.5));
+    const s = seg(p, 0.52, 0.75);
+    el.style.setProperty("--s", s);
+    el.querySelectorAll(".scores em").forEach((em) => { em.textContent = Math.round(em.dataset.to * s) + "%"; });
+    el.style.setProperty("--r", seg(p, 0.8, 0.9));
+  },
+  email(el, p) {
+    el.style.setProperty("--m", seg(p, 0, 0.15));
+    typeTo(el.querySelector(".typed"), seg(p, 0.2, 0.8));
+    el.style.setProperty("--r", seg(p, 0.85, 0.95));
+  },
+  ml(el, p) {
+    const lines = el.querySelectorAll(".ln"), shown = Math.ceil(seg(p, 0, 0.45) * lines.length);
+    lines.forEach((ln, i) => ln.classList.toggle("on", i < shown));
+    const k = seg(p, 0.3, 0.95);
+    el.style.setProperty("--l", 1 - k);
+    el.querySelectorAll(".metrics b").forEach((b) => {
+      const v = lerp(+b.dataset.from, +b.dataset.to, k);
+      b.textContent = "pct" in b.dataset ? Math.round(v) + "%" : v.toFixed(3);
+    });
+  },
+  web(el, p) {
+    const blocks = el.querySelectorAll(".b"), shown = seg(p, 0, 0.7) * blocks.length;
+    blocks.forEach((b, i) => b.classList.toggle("on", i < shown));
+    el.querySelector(".site").classList.toggle("styled", p > 0.8);
+  },
+  lang(el, p) {
+    const i = Math.min(3, Math.floor(seg(p, 0, 0.98) * 4));
+    el.querySelectorAll(".words span, .lang-list span").forEach((s) => s.classList.toggle("on", [...s.parentNode.children].indexOf(s) === i));
+  },
+};
 
-  const blob = new THREE.Mesh(new THREE.IcosahedronGeometry(1.6, 24), new THREE.ShaderMaterial({
-    uniforms,
-    vertexShader: `
-      uniform float uTime; uniform vec2 uMouse;
-      varying float vD; varying vec3 vN, vV;
-      void main() {
-        vec3 p = position * .9 + vec3(uMouse, 0.) * .6;
-        float d = (sin(p.x * 2.1 + uTime * .8) * sin(p.y * 2.7 - uTime) * sin(p.z * 2.3 + uTime * .6)
-                + .4 * sin(p.x * 4.3 - uTime * 1.1 + p.y * 3.1) * sin(p.z * 4.7 + uTime * .7)) * .3;
-        vD = d;
-        vN = normalize(normalMatrix * normal);
-        vec4 mv = modelViewMatrix * vec4(position + normal * d, 1.);
-        vV = normalize(-mv.xyz);
-        gl_Position = projectionMatrix * mv;
-      }`,
-    fragmentShader: `
-      varying float vD; varying vec3 vN, vV;
-      void main() {
-        float f = pow(1. - max(dot(vN, vV), 0.), 2.);
-        float h = clamp(vD * 1.4 + .35 + f * .6, 0., 1.);
-        vec3 c = mix(vec3(.02, .04, .12), vec3(.12, .3, .85), smoothstep(0., .45, h));
-        c = mix(c, vec3(.5, .78, 1.), smoothstep(.45, .85, h));
-        c = mix(c, vec3(.95, .98, 1.), smoothstep(.88, 1., h));
-        gl_FragColor = vec4(c, 1.);
-      }`,
-  }));
-  scene.add(blob);
-
-  // Static star dust: positions are uploaded once and the whole cloud just rotates.
-  const pos = new Float32Array(400 * 3).map(() => (Math.random() - 0.5) * 10);
-  const dustGeo = new THREE.BufferGeometry();
-  dustGeo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-  const dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({ size: 0.03, color: 0x9cc4ff, transparent: true, opacity: 0.6, depthWrite: false }));
-  scene.add(dust);
-
-  const resize = () => {
-    const w = canvas.clientWidth, h = canvas.clientHeight, wide = w > 960;
-    renderer.setSize(w, h, false);
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-    blob.position.set(wide ? 2.6 : 0.6, wide ? 0 : 1.2, 0);
-    blob.scale.setScalar(wide ? 0.9 : 0.75);
-  };
-  resize();
-  addEventListener("resize", resize);
-
-  const mouse = { x: 0, y: 0 };
-  addEventListener("pointermove", (e) => { mouse.x = e.clientX / innerWidth - 0.5; mouse.y = e.clientY / innerHeight - 0.5; }, { passive: true });
-
-  let visible = true;
-  new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe($(".hero"));
-  const clock = new THREE.Clock();
-  const render = () => {
-    const t = clock.getElapsedTime(), m = uniforms.uMouse.value;
-    uniforms.uTime.value = t;
-    m.x += (mouse.x - m.x) * 0.04; m.y += (mouse.y - m.y) * 0.04;
-    blob.rotation.set(m.y * 0.5, t * 0.1 + m.x * 0.6, 0);
-    dust.rotation.y = t * 0.02;
-    renderer.render(scene, camera);
-  };
-  render();
-  renderer.setAnimationLoop(() => { if (visible) render(); });
+const sceneEls = $$(".scene");
+let filmQueued = false;
+function playFilm() {
+  filmQueued = false;
+  const pinH = innerHeight - nav.offsetHeight;
+  for (const el of sceneEls) {
+    const r = el.getBoundingClientRect();
+    if (r.bottom < 0 || r.top > innerHeight) continue; // off screen: nothing to update
+    const p = clamp01((nav.offsetHeight - r.top) / (r.height - pinH));
+    el.style.setProperty("--p", p);
+    scenes[el.dataset.scene](el, p);
+  }
 }
+addEventListener("scroll", () => { if (!filmQueued) { filmQueued = true; requestAnimationFrame(playFilm); } }, { passive: true });
+addEventListener("resize", playFilm);
+playFilm();
+
+/* ---------- Hero: AI receptionist feed — each call types out, then gets its outcome ---------- */
+const CALLS = [
+  { who: "Priya Shah", said: "Hi, could I book a viewing for the Fenton Road house on Saturday?", tag: "✓ Viewing booked · Sat 11:00", kind: "ok" },
+  { who: "Tom Reed", said: "Could someone call me back about my valuation? I'm free after five.", tag: "↪ Callback scheduled · 17:30", kind: "info" },
+  { who: "Unknown number", said: "Congratulations, you've won a free holiday — press 1 to claim!", tag: "⛔ Spam blocked", kind: "bad" },
+  { who: "Marsh & Co", said: "We'd like a meeting with the principal about the Grays portfolio.", tag: "✓ Meeting booked · Thu 10:00", kind: "ok" },
+  { who: "Sarah Thompson", said: "Is the flat on Station Road still available to rent?", tag: "✉ Details sent by email", kind: "info" },
+];
+const callsEl = $("#calls"), handled = $("#handled");
+let heroOn = true, callIndex = 0;
+new IntersectionObserver(([e]) => { heroOn = e.isIntersecting; }).observe($(".hero"));
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+const whenVisible = async () => { while (!heroOn || document.hidden) await wait(400); };
+
+(async function runFeed() {
+  for (;;) {
+    await whenVisible();
+    const c = CALLS[callIndex++ % CALLS.length];
+    const li = document.createElement("li");
+    li.innerHTML = `<div class="who"><b></b><span>just now</span></div><p class="said"></p><span class="tag ${c.kind}"></span>`;
+    li.querySelector("b").textContent = c.who;
+    li.querySelector(".tag").textContent = c.tag;
+    callsEl.prepend(li);
+    callsEl.querySelectorAll("li .who span").forEach((s, i) => { if (i) s.textContent = i * 2 + " min ago"; });
+    while (callsEl.children.length > 4) callsEl.lastElementChild.remove();
+    const said = li.querySelector(".said");
+    for (let i = 1; i <= c.said.length; i++) { said.textContent = c.said.slice(0, i); await wait(28); }
+    await wait(450);
+    li.querySelector(".tag").classList.add("on");
+    handled.textContent = +handled.textContent + 1;
+    await wait(2200);
+  }
+})();

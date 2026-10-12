@@ -23,10 +23,9 @@
   <div class="nav-inner">
     <a href="#top" class="logo">Dima Livak</a>
     <nav class="nav-links" id="nav-links" aria-label="Primary">
-      <a href="#about">About</a>
-      <a href="#work">Experience</a>
-      <a href="#projects">Projects</a>
       <a href="#skills">Skills</a>
+      <a href="#projects">Projects</a>
+      <a href="#work">Experience</a>
       <a href="#education">Education</a>
       <a href="#contact">Contact</a>
     </nav>
@@ -38,60 +37,129 @@
 <main>
   <!-- HERO -->
   <section class="hero" id="top">
-    <canvas id="gl" aria-hidden="true"></canvas>
     <div class="hero-inner">
-      <p class="status"><i class="dot"></i>Open to remote, part-time work</p>
-      <h1>Dima Livak</h1>
-      <p class="role">Computer Science &amp; AI student at the University of Kent, building <span>practical AI automation</span> — systems that answer calls, reply to emails and book meetings.</p>
-      <div class="cta">
-        <a class="btn" href="#projects">View projects</a>
-        <a class="btn ghost" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=dimalivakd@gmail.com" target="_blank" rel="noopener">Get in touch</a>
+      <div class="hero-copy">
+        <p class="status"><i class="dot"></i>Open to remote, part-time work</p>
+        <h1>Dima Livak</h1>
+        <p class="role">I build <span>AI that answers calls and replies to emails</span> — so businesses never miss a client.</p>
+        <p class="sub">Computer Science &amp; AI student · University of Kent · AI automation at Apex27</p>
+        <div class="cta">
+          <a class="btn" href="#skills">See my skills ↓</a>
+          <a class="btn ghost" href="#contact">Contact me</a>
+        </div>
       </div>
-      <ul class="hero-facts">
-        <li><b>Apex27</b><span>AI automation assistant</span></li>
-        <li><b>4</b><span>live demos to try</span></li>
-        <li><b>20 hrs</b><span>per week available</span></li>
-      </ul>
+      <div class="feed" aria-label="Example: an AI receptionist handling calls">
+        <div class="feed-head"><b>AI receptionist</b><span class="live"><i></i>Live</span></div>
+        <ol class="calls" id="calls"></ol>
+        <div class="feed-foot"><span>Calls handled today</span><b id="handled">12</b></div>
+      </div>
     </div>
   </section>
 
-  <!-- ABOUT -->
-  <section class="sec" id="about">
-    <div class="sec-head" data-r><span>01</span><h2>About</h2></div>
-    <div class="about">
-      <p class="lead" data-r>I'm an adaptable Computer Science &amp; AI student with hands-on experience building <strong>AI-driven automation</strong> — automated email handling and AI call answering and routing — alongside three years of fast-paced customer service.</p>
-      <p data-r>I work well independently in remote settings, pick up new tools quickly and stay reliable under pressure. I'm looking for a <strong>remote, part-time role</strong> in IT or AI where I can keep building practical experience alongside my degree.</p>
+  <!-- SKILLS: a scroll-driven film. Each scene pins while you scroll through it and plays forward/backward with the scrollbar. -->
+  <section class="film" id="skills" aria-label="Skills">
+    <div class="film-intro">
+      <div class="sec-head"><span>01</span><h2>Skills, shown — not listed</h2></div>
+      <p>Scroll to play. Each scene is something I actually do.</p>
     </div>
-  </section>
 
-  <!-- EXPERIENCE -->
-  <section class="sec" id="work">
-    <div class="sec-head" data-r><span>02</span><h2>Experience</h2></div>
-    <ol class="rows">
-      <li data-r>
-        <span class="row-date">06/2026 – 08/2026</span>
-        <div><h3>AI Automation Assistant</h3><p class="row-org">Apex27 · Real Estate Agency · Remote · Part-time</p>
-        <p>Helped implement an AI system that drafts and sends replies to client enquiries, and an AI call-answering system that triages calls — booking meetings with management or forwarding notifications. Tuned the workflows to real business needs.</p></div>
-      </li>
-      <li data-r>
-        <span class="row-date">09/2023 – 06/2026</span>
-        <div><h3>Crew Member</h3><p class="row-org">Five Guys · Part-time</p>
-        <p>Fast, courteous service in a high-volume restaurant. Accurate orders, cash and card handling, and switching between grill, till and prep at peak times.</p></div>
-      </li>
-      <li data-r>
-        <span class="row-date">02/2022 – 06/2022</span>
-        <div><h3>Volunteer — Medical Supply Logistics</h3><p class="row-org">Ukrainian Armed Forces</p>
-        <p>Organised and dispensed essential medications for frontline supply, keeping accurate stock records.</p></div>
-      </li>
-    </ol>
+    <div class="scene" data-scene="call">
+      <div class="pin">
+        <div class="scene-text">
+          <span class="chapter">Scene 1 · AI automation</span>
+          <h3>Calls that answer themselves</h3>
+          <p>At Apex27 I helped set up an AI receptionist: it transcribes the caller, scores their intent and routes the call — booking a meeting, taking a message or blocking spam.</p>
+          <ul class="tags"><li>AI call triage</li><li>Intent scoring</li><li>Workflow design</li></ul>
+        </div>
+        <div class="stage call">
+          <div class="ring"><i class="ring-dot"></i><b>Incoming call</b><span>+44 7700 900 412</span></div>
+          <p class="transcript"><span class="typed" data-text="Hi, it's Priya from Marsh &amp; Co — could I book a meeting with the principal about the Grays portfolio? Thursday morning would be ideal."></span><i class="caret"></i></p>
+          <div class="scores">
+            <div><span>Meeting</span><i style="--to:.86"></i><em data-to="86">0%</em></div>
+            <div><span>Message</span><i style="--to:.10"></i><em data-to="10">0%</em></div>
+            <div><span>Spam</span><i style="--to:.04"></i><em data-to="4">0%</em></div>
+          </div>
+          <div class="result">✓ Meeting booked · Thu 10:00 with the principal</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene" data-scene="email">
+      <div class="pin">
+        <div class="scene-text">
+          <span class="chapter">Scene 2 · AI automation</span>
+          <h3>Emails replied before you read them</h3>
+          <p>Client enquiries arrive, the AI drafts a reply in the agency's tone with the right details, and the team only steps in when it matters.</p>
+          <ul class="tags"><li>AI email workflows</li><li>Prompt design</li><li>REST APIs</li></ul>
+        </div>
+        <div class="stage mail">
+          <div class="mail-in"><b>Sarah Thompson</b><span>Viewing request — 14 Fenton Road</span><p>Hi, is the house on Fenton Road still available? Could I view it this weekend?</p></div>
+          <div class="mail-out"><span class="mail-label">AI draft · reply</span><p><span class="typed" data-text="Hi Sarah — great news, 14 Fenton Road is still available. I can offer Saturday at 11:00 or Sunday at 14:00 for a viewing. Just reply with the slot that suits you and I'll confirm. Kind regards, Hartley &amp; Grove"></span><i class="caret"></i></p></div>
+          <div class="result">✓ Sent in 4 seconds</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene" data-scene="ml">
+      <div class="pin">
+        <div class="scene-text">
+          <span class="chapter">Scene 3 · Python &amp; machine learning</span>
+          <h3>Models trained from first principles</h3>
+          <p>I write the maths myself — forward pass, loss, backpropagation — so I understand what a model is actually doing, not just which library to call.</p>
+          <ul class="tags"><li>Python</li><li>Backpropagation</li><li>Data handling</li></ul>
+        </div>
+        <div class="stage ml">
+          <pre class="code"><code><span class="ln"><b>for</b> epoch <b>in</b> range(200):</span><span class="ln">    out  = forward(X, W)</span><span class="ln">    loss = bce(out, y)</span><span class="ln">    grad = backward(out, y, W)</span><span class="ln">    W   -= lr * grad</span><span class="ln">    log(epoch, loss, accuracy(out, y))</span></code></pre>
+          <div class="chart">
+            <svg viewBox="0 0 300 120" preserveAspectRatio="none" aria-hidden="true"><path class="loss" pathLength="1" d="M0 8 C 30 12, 45 60, 70 76 S 130 100, 170 106 S 250 112, 300 113"/></svg>
+            <div class="metrics"><span>loss <b data-from="0.693" data-to="0.041">0.693</b></span><span>accuracy <b data-from="52" data-to="97" data-pct>52%</b></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene" data-scene="web">
+      <div class="pin">
+        <div class="scene-text">
+          <span class="chapter">Scene 4 · Web development</span>
+          <h3>From wireframe to working site</h3>
+          <p>HTML, CSS and JavaScript, built by hand — like this portfolio and the full estate agency site running on real API data.</p>
+          <ul class="tags"><li>HTML &amp; CSS</li><li>JavaScript</li><li>Git &amp; GitHub</li></ul>
+        </div>
+        <div class="stage web">
+          <div class="win"><div class="win-bar"><i></i><i></i><i></i></div>
+            <div class="site">
+              <div class="b b-nav"><i></i><i></i><i></i></div>
+              <div class="b b-hero"><b>Find a place you'll love</b><span>Search</span></div>
+              <div class="b-grid"><div class="b b-card"></div><div class="b b-card"></div><div class="b b-card"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene" data-scene="lang">
+      <div class="pin">
+        <div class="scene-text">
+          <span class="chapter">Scene 5 · Communication</span>
+          <h3>Four languages, three years front-of-house</h3>
+          <p>Fast-paced customer service at Five Guys taught me to stay calm and clear under pressure — in whichever language the customer speaks.</p>
+          <ul class="tags"><li>Teamwork</li><li>Customer service</li><li>Remote work</li></ul>
+        </div>
+        <div class="stage lang">
+          <div class="words"><span>Привіт</span><span>Hello</span><span>Привет</span><span>Cześć</span></div>
+          <div class="lang-list"><span>Ukrainian · native</span><span>English · fluent</span><span>Russian · fluent</span><span>Polish · conversational</span></div>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- PROJECTS -->
   <section class="sec" id="projects">
-    <div class="sec-head" data-r><span>03</span><h2>Projects</h2></div>
+    <div class="sec-head" data-r><span>02</span><h2>Projects</h2></div>
     <div class="grid">
       <article class="card" data-r style="--c1:#4f8cff;--c2:#7dd3fc">
-        <div class="pvis"><div class="wave"></div><span class="chip">MEETING · 84%</span></div>
+        <a class="pvis pvid" href="projects/call-triage.html" aria-label="Open live demo"><video muted loop playsinline preload="none" poster="assets/video/triage.jpg" data-src="assets/video/triage.mp4"></video><span class="play">Live demo ↗</span></a>
         <div class="card-body">
           <h3>AI call triage</h3>
           <p>A recreation of the call-routing system I helped build at Apex27. Play a caller and watch it get transcribed, scored against intent patterns and routed in real time.</p>
@@ -100,7 +168,7 @@
         </div>
       </article>
       <article class="card" data-r style="--c1:#a78bfa;--c2:#60a5fa">
-        <div class="pvis"><svg class="net" viewBox="0 0 300 200" aria-hidden="true"></svg></div>
+        <a class="pvis pvid" href="projects/neural-net.html" aria-label="Open live demo"><video muted loop playsinline preload="none" poster="assets/video/neuralnet.jpg" data-src="assets/video/neuralnet.mp4"></video><span class="play">Live demo ↗</span></a>
         <div class="card-body">
           <h3>Neural net playground</h3>
           <p>Place data points and watch a backprop network learn the decision boundary live. No ML frameworks — just canvas and calculus.</p>
@@ -109,7 +177,7 @@
         </div>
       </article>
       <article class="card" data-r style="--c1:#2dd4bf;--c2:#3b82f6">
-        <div class="pvis"><div class="city"></div></div>
+        <a class="pvis pvid" href="projects/estate-agency/index.html" aria-label="Open live demo"><video muted loop playsinline preload="none" poster="assets/video/estate.jpg" data-src="assets/video/estate.mp4"></video><span class="play">Live demo ↗</span></a>
         <div class="card-body">
           <h3>Estate agency website</h3>
           <p>Search, filters, property pages, valuation and contact — running entirely in the browser on a real snapshot of the Apex27 Portal API.</p>
@@ -118,7 +186,7 @@
         </div>
       </article>
       <article class="card" data-r style="--c1:#38bdf8;--c2:#c7d2fe">
-        <div class="pvis" data-preview="projects/murmuration.html?mini"></div>
+        <a class="pvis pvid" href="projects/murmuration.html" aria-label="Open live demo"><video muted loop playsinline preload="none" poster="assets/video/murmuration.jpg" data-src="assets/video/murmuration.mp4"></video><span class="play">Live demo ↗</span></a>
         <div class="card-body">
           <h3>Murmuration</h3>
           <p>Thousands of starlings, each following three local rules — separation, alignment, cohesion. The flock that emerges is swarm intelligence. Your cursor is the falcon.</p>
@@ -143,29 +211,31 @@
     </div>
   </section>
 
-  <!-- SKILLS -->
-  <section class="sec" id="skills">
-    <div class="sec-head" data-r><span>04</span><h2>Skills</h2></div>
-    <div class="skills">
-      <div class="tile" data-r><h3>Languages &amp; web</h3><ul class="tags"><li>Python</li><li>JavaScript</li><li>HTML</li><li>CSS</li><li>Pascal</li></ul></div>
-      <div class="tile" data-r><h3>AI &amp; automation</h3><ul class="tags"><li>AI email workflows</li><li>AI call triage</li><li>REST APIs</li></ul></div>
-      <div class="tile" data-r><h3>Tools</h3><ul class="tags"><li>Visual Studio</li><li>Git &amp; GitHub</li><li>GitHub Pages</li><li>MS Office</li></ul></div>
-      <div class="tile" data-r><h3>Working style</h3><ul class="tags"><li>Communication</li><li>Teamwork</li><li>Remote work</li><li>Reliability</li><li>Problem-solving</li></ul></div>
-      <div class="tile tile-wide" data-r>
-        <h3>Spoken languages</h3>
-        <div class="bars">
-          <div><span>Ukrainian</span><i style="--w:100%"></i><em>Native</em></div>
-          <div><span>English</span><i style="--w:90%"></i><em>Fluent</em></div>
-          <div><span>Russian</span><i style="--w:90%"></i><em>Fluent</em></div>
-          <div><span>Polish</span><i style="--w:35%"></i><em>Conversational</em></div>
-        </div>
-      </div>
-    </div>
+  <!-- EXPERIENCE -->
+  <section class="sec" id="work">
+    <div class="sec-head" data-r><span>03</span><h2>Experience</h2></div>
+    <ol class="rows">
+      <li data-r>
+        <span class="row-date">06/2026 – 08/2026</span>
+        <div><h3>AI Automation Assistant</h3><p class="row-org">Apex27 · Real Estate Agency · Remote · Part-time</p>
+        <p>Helped implement an AI system that drafts and sends replies to client enquiries, and an AI call-answering system that triages calls — booking meetings with management or forwarding notifications. Tuned the workflows to real business needs.</p></div>
+      </li>
+      <li data-r>
+        <span class="row-date">09/2023 – 06/2026</span>
+        <div><h3>Crew Member</h3><p class="row-org">Five Guys · Part-time</p>
+        <p>Fast, courteous service in a high-volume restaurant. Accurate orders, cash and card handling, and switching between grill, till and prep at peak times.</p></div>
+      </li>
+      <li data-r>
+        <span class="row-date">02/2022 – 06/2022</span>
+        <div><h3>Volunteer — Medical Supply Logistics</h3><p class="row-org">Ukrainian Armed Forces</p>
+        <p>Organised and dispensed essential medications for frontline supply, keeping accurate stock records.</p></div>
+      </li>
+    </ol>
   </section>
 
   <!-- EDUCATION -->
   <section class="sec" id="education">
-    <div class="sec-head" data-r><span>05</span><h2>Education</h2></div>
+    <div class="sec-head" data-r><span>04</span><h2>Education</h2></div>
     <ol class="rows">
       <li data-r><span class="row-date">09/2025 – now</span><div><h3>BSc Computer Science &amp; AI</h3><p class="row-org">University of Kent · Canterbury</p><p>Year 1 complete, progressing to Year 2 in September 2026. Includes an integrated Year in Industry placement.</p></div></li>
       <li data-r><span class="row-date">2022 – 2023</span><div><h3>T Level — Digital Production, Design &amp; Development</h3><p class="row-org">South Essex College</p><p>Achieved a Merit.</p></div></li>
@@ -175,7 +245,7 @@
 
   <!-- CONTACT -->
   <section class="sec contact" id="contact">
-    <div class="sec-head" data-r><span>06</span><h2>Contact</h2></div>
+    <div class="sec-head" data-r><span>05</span><h2>Contact</h2></div>
     <div class="contact-card" data-r>
       <h3>Let's work together.</h3>
       <p>Open to remote, part-time roles — ideally IT or AI-related — alongside my studies.</p>

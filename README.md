@@ -2,7 +2,7 @@
 
 Personal portfolio for **Dima Livak**, a Computer Science & AI student (University of Kent), hosted on GitHub Pages.
 
-A clean, dark single-page site with a lightweight WebGL hero (Three.js), a sticky navigation bar that highlights the current section, and — most importantly — **four live, interactive demos** that run entirely in the browser (no backend).
+A clean, dark single-page site: an animated AI-receptionist call feed in the hero, a scroll-driven **skills film** (five scenes that play forward and backward with the scrollbar), project cards with looping screen recordings, and — most importantly — **four live, interactive demos** that run entirely in the browser (no backend).
 
 ## Live demos
 
@@ -17,11 +17,12 @@ A clean, dark single-page site with a lightweight WebGL hero (Three.js), a stick
 
 ```
 .
-├── index.html                 # portfolio home (hero, about, experience, projects, skills, education, contact)
-├── style.css                  # design tokens, layout, responsive nav, project visuals
-├── script.js                  # nav (active section, mobile menu), scroll reveals, WebGL hero
+├── index.html                 # portfolio home (hero, skills film, projects, experience, education, contact)
+├── style.css                  # design tokens, layout, responsive nav, hero feed, film scenes
+├── script.js                  # nav, scroll reveals, card videos, skills film engine, hero call feed
 ├── favicon.svg
 ├── Dima_Livak_CV.pdf          # downloadable CV
+├── assets/video/              # looping demo recordings + posters for the project cards
 └── projects/
     ├── call-triage.html
     ├── neural-net.html
