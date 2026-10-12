@@ -23,6 +23,16 @@ const sectionObserver = new IntersectionObserver((entries) => entries.forEach((e
 }), { rootMargin: "-45% 0px -50% 0px" });
 $$("main section[id]").forEach((s) => sectionObserver.observe(s));
 
+/* ---------- Soft spotlight that follows the mouse across glass panels ---------- */
+for (const el of $$(".card, .feed, .contact-card")) {
+  el.classList.add("spot");
+  el.addEventListener("pointermove", (e) => {
+    const r = el.getBoundingClientRect();
+    el.style.setProperty("--mx", `${e.clientX - r.left}px`);
+    el.style.setProperty("--my", `${e.clientY - r.top}px`);
+  }, { passive: true });
+}
+
 /* ---------- Scroll reveals ---------- */
 const revealObserver = new IntersectionObserver((entries) => entries.forEach((e) => {
   if (!e.isIntersecting) return;
