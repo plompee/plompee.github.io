@@ -10,14 +10,10 @@
 <script>
   // Reveal animations only run once script.js loads; otherwise the page stays fully visible.
   document.documentElement.classList.add("js");
-  try { var t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
   setTimeout(function () { if (!window.__ready) document.documentElement.classList.remove("js"); }, 3000);
 </script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preload" href="assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="sections.css">
 </head>
 <body>
 
@@ -32,14 +28,6 @@
       <a href="#journey">Journey</a>
       <a href="#process">Process</a>
       <a href="#contact">Contact</a>
-      <div class="themes" role="group" aria-label="Colour theme">
-        <button type="button" data-theme="aurora" style="--c1:#8b7bff;--c2:#5eead4" aria-label="Aurora colours" title="Aurora"></button>
-        <button type="button" data-theme="ocean" style="--c1:#38bdf8;--c2:#818cf8" aria-label="Ocean colours" title="Ocean"></button>
-        <button type="button" data-theme="sunset" style="--c1:#fb923c;--c2:#f472b6" aria-label="Sunset colours" title="Sunset"></button>
-        <button type="button" data-theme="emerald" style="--c1:#10b981;--c2:#a3e635" aria-label="Emerald colours" title="Emerald"></button>
-        <button type="button" data-theme="rose" style="--c1:#f472b6;--c2:#fcd34d" aria-label="Rose colours" title="Rose"></button>
-        <button type="button" data-theme="mono" style="--c1:#e4e4e7;--c2:#71717a" aria-label="Mono colours" title="Mono"></button>
-      </div>
     </nav>
     <a href="Dima_Livak_CV.pdf" class="btn btn-sm nav-cv" target="_blank" rel="noopener">Download CV</a>
     <button class="menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-links"><span></span><span></span></button>
@@ -212,7 +200,7 @@
 
     <div class="features">
       <article class="feature" data-r>
-        <a class="feature-media pvid" href="https://github.com/plompee/ai-receptionist" target="_blank" rel="noopener" aria-label="AI Receptionist Studio on GitHub"><video muted loop playsinline preload="none" poster="assets/video/receptionist.jpg" data-src="assets/video/receptionist.mp4"></video><span class="demo-label">Demo recording · AI answers scripted for this video</span><span class="play">View on GitHub ↗</span></a>
+        <a class="feature-media pvid" href="https://github.com/plompee/ai-receptionist" target="_blank" rel="noopener" aria-label="AI Receptionist Studio on GitHub"><video muted loop playsinline preload="none" data-poster="assets/video/receptionist.webp" data-src="assets/video/receptionist.mp4"></video><span class="demo-label">Demo recording · AI answers scripted for this video</span><span class="play">View on GitHub ↗</span></a>
         <div class="feature-body">
           <span class="feature-n">01</span>
           <p class="meta">Full-stack AI · Node.js · Claude API</p>
@@ -223,7 +211,7 @@
         </div>
       </article>
       <article class="feature" data-r>
-        <a class="feature-media pvid" href="https://github.com/plompee/ai-inbox" target="_blank" rel="noopener" aria-label="AI Inbox Assistant on GitHub"><video muted loop playsinline preload="none" poster="assets/video/inbox.jpg" data-src="assets/video/inbox.mp4"></video><span class="demo-label">Demo recording · AI answers scripted for this video</span><span class="play">View on GitHub ↗</span></a>
+        <a class="feature-media pvid" href="https://github.com/plompee/ai-inbox" target="_blank" rel="noopener" aria-label="AI Inbox Assistant on GitHub"><video muted loop playsinline preload="none" data-poster="assets/video/inbox.webp" data-src="assets/video/inbox.mp4"></video><span class="demo-label">Demo recording · AI answers scripted for this video</span><span class="play">View on GitHub ↗</span></a>
         <div class="feature-body">
           <span class="feature-n">02</span>
           <p class="meta">Python · FastAPI · Structured outputs</p>
@@ -234,7 +222,7 @@
         </div>
       </article>
       <article class="feature" data-r>
-        <a class="feature-media pvid" href="https://github.com/plompee/ask-the-handbook" target="_blank" rel="noopener" aria-label="Ask the Handbook on GitHub"><video muted loop playsinline preload="none" poster="assets/video/handbook.jpg" data-src="assets/video/handbook.mp4"></video><span class="demo-label">Demo recording · search is real, AI answer wording scripted</span><span class="play">View on GitHub ↗</span></a>
+        <a class="feature-media pvid" href="https://github.com/plompee/ask-the-handbook" target="_blank" rel="noopener" aria-label="Ask the Handbook on GitHub"><video muted loop playsinline preload="none" data-poster="assets/video/handbook.webp" data-src="assets/video/handbook.mp4"></video><span class="demo-label">Demo recording · search is real, AI answer wording scripted</span><span class="play">View on GitHub ↗</span></a>
         <div class="feature-body">
           <span class="feature-n">03</span>
           <p class="meta">RAG · Python · Citations</p>
@@ -254,27 +242,27 @@
     </div>
     <div class="mini-grid" id="mini-grid">
       <article class="card mini" data-cat="algo creative">
-        <a class="pvis pvid" href="projects/pathfinding.html" aria-label="Open Pathfinding race"><video muted loop playsinline preload="none" poster="assets/video/pathfinding.jpg" data-src="assets/video/pathfinding.mp4"></video><span class="play">Live demo ↗</span></a>
+        <a class="pvis pvid" href="projects/pathfinding.html" aria-label="Open Pathfinding race"><video muted loop playsinline preload="none" data-poster="assets/video/pathfinding.webp" data-src="assets/video/pathfinding.mp4"></video><span class="play">Live demo ↗</span></a>
         <div class="card-body"><h3>Pathfinding race</h3><p>BFS, Dijkstra, A* and greedy race on one map — the fastest search isn't always the cheapest route.</p>
           <div class="links"><a class="btn btn-sm" href="projects/pathfinding.html">Live demo</a><a class="btn btn-sm ghost" href="https://github.com/plompee/plompee.github.io/blob/main/projects/pathfinding.html" target="_blank" rel="noopener">Source</a></div></div>
       </article>
       <article class="card mini" data-cat="ai web">
-        <a class="pvis pvid" href="projects/call-triage.html" aria-label="Open AI call triage"><video muted loop playsinline preload="none" poster="assets/video/triage.jpg" data-src="assets/video/triage.mp4"></video><span class="play">Live demo ↗</span></a>
+        <a class="pvis pvid" href="projects/call-triage.html" aria-label="Open AI call triage"><video muted loop playsinline preload="none" data-poster="assets/video/triage.webp" data-src="assets/video/triage.mp4"></video><span class="play">Live demo ↗</span></a>
         <div class="card-body"><h3>AI call triage</h3><p>The call-routing system from Apex27, recreated: transcribe, score intent, route — in real time.</p>
           <div class="links"><a class="btn btn-sm" href="projects/call-triage.html">Live demo</a><a class="btn btn-sm ghost" href="https://github.com/plompee/plompee.github.io/blob/main/projects/call-triage.html" target="_blank" rel="noopener">Source</a></div></div>
       </article>
       <article class="card mini" data-cat="ai algo">
-        <a class="pvis pvid" href="projects/neural-net.html" aria-label="Open Neural net playground"><video muted loop playsinline preload="none" poster="assets/video/neuralnet.jpg" data-src="assets/video/neuralnet.mp4"></video><span class="play">Live demo ↗</span></a>
+        <a class="pvis pvid" href="projects/neural-net.html" aria-label="Open Neural net playground"><video muted loop playsinline preload="none" data-poster="assets/video/neuralnet.webp" data-src="assets/video/neuralnet.mp4"></video><span class="play">Live demo ↗</span></a>
         <div class="card-body"><h3>Neural net playground</h3><p>Place points and watch a backprop network learn the boundary live — no ML libraries.</p>
           <div class="links"><a class="btn btn-sm" href="projects/neural-net.html">Live demo</a><a class="btn btn-sm ghost" href="https://github.com/plompee/plompee.github.io/blob/main/projects/neural-net.html" target="_blank" rel="noopener">Source</a></div></div>
       </article>
       <article class="card mini" data-cat="web">
-        <a class="pvis pvid" href="projects/estate-agency/index.html" aria-label="Open Estate agency website"><video muted loop playsinline preload="none" poster="assets/video/estate.jpg" data-src="assets/video/estate.mp4"></video><span class="play">Live demo ↗</span></a>
+        <a class="pvis pvid" href="projects/estate-agency/index.html" aria-label="Open Estate agency website"><video muted loop playsinline preload="none" data-poster="assets/video/estate.webp" data-src="assets/video/estate.mp4"></video><span class="play">Live demo ↗</span></a>
         <div class="card-body"><h3>Estate agency website</h3><p>Search, filters, property pages and valuations on a real Apex27 Portal API data snapshot.</p>
           <div class="links"><a class="btn btn-sm" href="projects/estate-agency/index.html">Live demo</a><a class="btn btn-sm ghost" href="https://github.com/plompee/plompee.github.io/tree/main/projects/estate-agency" target="_blank" rel="noopener">Source</a></div></div>
       </article>
       <article class="card mini" data-cat="creative algo">
-        <a class="pvis pvid" href="projects/murmuration.html" aria-label="Open Murmuration"><video muted loop playsinline preload="none" poster="assets/video/murmuration.jpg" data-src="assets/video/murmuration.mp4"></video><span class="play">Live demo ↗</span></a>
+        <a class="pvis pvid" href="projects/murmuration.html" aria-label="Open Murmuration"><video muted loop playsinline preload="none" data-poster="assets/video/murmuration.webp" data-src="assets/video/murmuration.mp4"></video><span class="play">Live demo ↗</span></a>
         <div class="card-body"><h3>Murmuration</h3><p>Thousands of starlings following three simple rules — swarm intelligence you can chase with your cursor.</p>
           <div class="links"><a class="btn btn-sm" href="projects/murmuration.html">Live demo</a><a class="btn btn-sm ghost" href="https://github.com/plompee/plompee.github.io/blob/main/projects/murmuration.html" target="_blank" rel="noopener">Source</a></div></div>
       </article>

@@ -33,16 +33,6 @@ for (const el of $$(".card, .tile, .contact-card")) {
   }, { passive: true });
 }
 
-/* ---------- Colour themes: dots in the nav, choice remembered on this device ---------- */
-const themeBtns = $$(".themes button");
-function setTheme(name, save) {
-  document.documentElement.dataset.theme = name;
-  themeBtns.forEach((b) => b.setAttribute("aria-pressed", b.dataset.theme === name));
-  if (save) try { localStorage.setItem("theme", name); } catch { /* private mode: just don't remember */ }
-}
-setTheme(document.documentElement.dataset.theme || "aurora", false);
-themeBtns.forEach((b) => b.addEventListener("click", () => setTheme(b.dataset.theme, true)));
-
 /* ---------- Bento: live Canterbury clock ---------- */
 const clock = $("#clock");
 if (clock) {
@@ -108,6 +98,13 @@ const cardObserver = new IntersectionObserver((entries) => entries.forEach((e) =
   playIfAllowed(v);
 }), { threshold: 0.25 });
 $$(".pvid video").forEach((v) => cardObserver.observe(v));
+// Poster images load only when a card gets near the screen, not all at once on page load.
+const posterObserver = new IntersectionObserver((entries) => entries.forEach((e) => {
+  if (!e.isIntersecting) return;
+  e.target.poster = e.target.dataset.poster;
+  posterObserver.unobserve(e.target);
+}), { rootMargin: "600px" });
+$$("video[data-poster]").forEach((v) => posterObserver.observe(v));
 
 /* ---------- Skills film: each scene plays forward/backward with the scrollbar ---------- */
 const clamp01 = (v) => Math.min(1, Math.max(0, v));
@@ -153,11 +150,11 @@ const sceneEls = $$(".scene");
 let filmQueued = false;
 function playFilm() {
   filmQueued = false;
-  const pinH = innerHeight - nav.offsetHeight;
-  for (const el of sceneEls) {
-    const r = el.getBoundingClientRect();
-    if (r.bottom < 0 || r.top > innerHeight) continue; // off screen: nothing to update
-    const p = clamp01((nav.offsetHeight - r.top) / (r.height - pinH));
+  // Read every position first, then write: mixing the two forces the browser to re-lay-out the page each time.
+  const navH = nav.offsetHeight, pinH = innerHeight - navH;
+  const visible = sceneEls.map((el) => [el, el.getBoundingClientRect()]).filter(([, r]) => r.bottom >= 0 && r.top <= innerHeight);
+  for (const [el, r] of visible) {
+    const p = clamp01((navH - r.top) / (r.height - pinH));
     el.style.setProperty("--p", p);
     scenes[el.dataset.scene](el, p);
   }
@@ -181,6 +178,9 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 const whenVisible = async () => { while (!heroOn || document.hidden) await wait(400); };
 
 (async function runFeed() {
+  // Start after the page has loaded, so the typing doesn't compete with the first paint.
+  if (document.readyState !== "complete") await new Promise((r) => addEventListener("load", r, { once: true }));
+  await wait(400);
   for (;;) {
     await whenVisible();
     const c = CALLS[callIndex++ % CALLS.length];
