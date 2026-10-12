@@ -260,7 +260,7 @@ h1, h2, h3 { color: var(--fg); font-family: var(--display); letter-spacing: -.02
 }
 
 /* =====================================================================
-   2026 theme layer — glass, aurora, serif accents. Overrides the base
+   2026 theme layer — glass, aurora, gradient accents. Overrides the base
    styles above without changing layout. Cheap effects only: gradients,
    opacity and transform (no blur filters or blend modes on scroll).
    ===================================================================== */
@@ -278,15 +278,14 @@ h1, h2, h3 { color: var(--fg); font-family: var(--display); letter-spacing: -.02
   --sheen: linear-gradient(100deg, #c4b5fd 0%, #93c5fd 45%, #5eead4 100%);
   --edge: linear-gradient(140deg, rgba(167, 139, 250, .45), rgba(255, 255, 255, .06) 38%, rgba(255, 255, 255, .04) 62%, rgba(94, 234, 212, .35));
   --display: "Geist", "Inter", system-ui, sans-serif;
-  --serif: "Instrument Serif", Georgia, serif;
   --nav-h: 88px;
 }
 html { background: var(--bg); }
 body { background: transparent; font-family: "Geist", "Inter", system-ui, sans-serif; letter-spacing: -.005em; }
 h1, h2, h3 { font-family: var(--display); letter-spacing: -.035em; }
 h1 em, h2 em, h3 em {
-  font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -.01em;
-  background: var(--sheen); -webkit-background-clip: text; background-clip: text; color: transparent; padding-right: .06em;
+  font: inherit; font-style: normal; letter-spacing: inherit;
+  background: var(--sheen); -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 ::selection { background: rgba(139, 123, 255, .6); }
 
@@ -338,10 +337,13 @@ h1 em, h2 em, h3 em {
 /* hero */
 .hero { background: none; }
 .hero::after { display: none; }
-.hero h1 { font-size: clamp(3.6rem, 9vw, 7.6rem); font-weight: 600; letter-spacing: -.055em; line-height: .95; }
-.hero h1 em { font-size: 1.08em; }
+.hero h1 {
+  font-size: clamp(3.6rem, 9vw, 7.4rem); font-weight: 700; letter-spacing: -.055em; line-height: .95; padding-bottom: .06em;
+  background: linear-gradient(180deg, #ffffff 35%, #cfc8ff 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 8px 40px rgba(139, 123, 255, .25));
+}
 .role { color: var(--text); }
-.role span { font-family: var(--serif); font-style: italic; font-size: 1.12em; background: var(--sheen); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.role span { font-weight: 500; background: var(--sheen); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .status { background: rgba(255, 255, 255, .04); border-color: var(--line); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
 .feed { border-radius: 24px; }
 .feed-head, .feed-foot { border-color: var(--line); }
@@ -399,3 +401,12 @@ h1 em, h2 em, h3 em {
   .nav-inner { height: 56px; padding: 0 8px 0 18px; }
   .nav-links { top: calc(100% + 8px); left: 0; right: 0; border-radius: 22px; border: 1px solid var(--line); background: #0c0c14 !important; box-shadow: 0 24px 60px -20px #000; }
 }
+
+/* hero card: a glowing edge that slowly travels round the border */
+@property --edge-angle { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+.feed {
+  background: linear-gradient(rgba(16, 16, 26, .9), rgba(12, 12, 20, .9)) padding-box,
+              conic-gradient(from var(--edge-angle), rgba(139, 123, 255, .08), rgba(139, 123, 255, .85) 12%, rgba(94, 234, 212, .7) 22%, rgba(139, 123, 255, .08) 38%, rgba(139, 123, 255, .08)) border-box !important;
+  animation: edge-spin 7s linear infinite;
+}
+@keyframes edge-spin { to { --edge-angle: 360deg; } }
