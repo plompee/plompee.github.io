@@ -4,6 +4,10 @@ Personal portfolio for **Dima Livak**, a Computer Science & AI student (Universi
 
 A clean, dark single-page site: an animated AI-receptionist call feed in the hero, a scroll-driven **skills film** (five scenes that play forward and backward with the scrollbar), project cards with looping screen recordings, and — most importantly — **five live, interactive demos** that run entirely in the browser (no backend).
 
+## Featured project
+
+**[AI Receptionist Studio](https://github.com/plompee/ai-receptionist)** — a configurable AI phone receptionist (Node.js + Claude API). It runs on a server with an API key, so the portfolio shows a labelled demo recording (`assets/video/receptionist.mp4`) and links to the repository.
+
 ## Live demos
 
 | Demo | Path | What it does |
