@@ -2,7 +2,7 @@
 
 Personal portfolio for **Dima Livak**, a Computer Science & AI student (University of Kent), hosted on GitHub Pages.
 
-A clean, dark single-page site: an animated AI-receptionist call feed in the hero, a scroll-driven **skills film** (five scenes that play forward and backward with the scrollbar), project cards with looping screen recordings, and — most importantly — **four live, interactive demos** that run entirely in the browser (no backend).
+A clean, dark single-page site: an animated AI-receptionist call feed in the hero, a scroll-driven **skills film** (five scenes that play forward and backward with the scrollbar), project cards with looping screen recordings, and — most importantly — **five live, interactive demos** that run entirely in the browser (no backend).
 
 ## Live demos
 
@@ -11,6 +11,7 @@ A clean, dark single-page site: an animated AI-receptionist call feed in the her
 | **AI call triage** | `projects/call-triage.html` | A recreation of the call-routing system built at Apex27. Play a preset caller (or type your own) and watch it get "transcribed", scored against intent patterns, and routed in real time. |
 | **Neural net playground** | `projects/neural-net.html` | A real `2→4→1` backprop network trained live in the browser. Place data points on a canvas and watch the decision boundary, weights, and loss update per frame. No ML frameworks. |
 | **Murmuration** | `projects/murmuration.html` | Thousands of boids flocking with separation, alignment and cohesion, using a spatial hash for fast neighbour lookups. Your cursor is a falcon the flock flees from; sliders change the rules live. |
+| **Pathfinding race** | `projects/pathfinding.html` | BFS, Dijkstra, A* and greedy best-first race on the same editable map (walls, weighted mud, draggable start/goal), one cell per tick. Shows that the fastest search is not always the cheapest route. Binary-heap priority queue; each algorithm is a step-by-step generator. |
 | **Estate agency website** | `projects/estate-agency/` | A complete estate agency site (search, filters, sort, pagination, property pages, valuation & contact forms) running 100% client-side on a real data snapshot of the Apex27 Portal API. |
 
 ## Structure
@@ -27,6 +28,7 @@ A clean, dark single-page site: an animated AI-receptionist call feed in the her
     ├── call-triage.html
     ├── neural-net.html
     ├── murmuration.html
+    ├── pathfinding.html
     └── estate-agency/
         ├── index.html         # home: hero search, featured, stats
         ├── listings.html      # search + filters + sort + pagination

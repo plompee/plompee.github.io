@@ -133,6 +133,7 @@ h1, h2, h3 { color: var(--fg); font-family: var(--display); letter-spacing: -.02
 /* video previews */
 .pvid { position: relative; display: block; }
 .pvid video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; background: #081020; }
+.card-wide .pvid video { object-fit: contain; object-position: center; }
 .play {
   position: absolute; right: 14px; bottom: 14px; font-size: 13px; font-weight: 600; padding: 7px 14px; border-radius: 99px;
   background: rgba(6, 10, 20, .8); color: var(--fg); border: 1px solid var(--line); opacity: 0; transform: translateY(6px); transition: opacity .25s, transform .25s;

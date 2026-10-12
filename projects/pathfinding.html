@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pathfinding Race — Demo | Dima Livak</title>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #060a14; --bg2: #0c1322; --bg3: #111a2e; --fg: #eef3ff; --text: #c3cde3; --mute: #8391ad; --line: rgba(120, 160, 255, .14); --a1: #4f8cff; --a2: #7dd3fc; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font: 400 15px/1.55 "Inter", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 24px; }
+  header { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; margin-bottom: 20px; }
+  h1 { font: 700 clamp(2rem, 4vw, 3rem)/1.05 "Inter Tight", sans-serif; color: var(--fg); letter-spacing: -.03em; }
+  header p { max-width: 640px; margin-top: 10px; }
+  .back { flex: none; font: 500 13px "JetBrains Mono", monospace; padding: 9px 16px; border: 1px solid var(--line); border-radius: 99px; }
+  .back:hover { color: var(--a2); border-color: var(--a2); }
+  .bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 12px; border: 1px solid var(--line); border-radius: 14px; background: var(--bg2); margin-bottom: 18px; }
+  .bar .sep { width: 1px; height: 26px; background: var(--line); margin: 0 4px; }
+  button { font: 600 14px "Inter", sans-serif; padding: 9px 16px; border-radius: 10px; border: 1px solid var(--line); background: transparent; color: var(--fg); cursor: pointer; }
+  button:hover { border-color: var(--a2); }
+  button.on { background: var(--bg3); border-color: var(--a1); }
+  button.go { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+  button.go:hover { background: var(--a1); border-color: var(--a1); color: #fff; }
+  label { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; color: var(--mute); margin-left: auto; }
+  input[type=range] { accent-color: var(--a1); width: 120px; }
+  .boards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 1150px) { .boards { grid-template-columns: repeat(2, 1fr); } }
+  .board { border: 1px solid var(--line); border-radius: 14px; background: var(--bg2); overflow: hidden; }
+  .board.win { border-color: #3ddc84; box-shadow: 0 0 0 1px #3ddc84, 0 20px 60px -30px rgba(61, 220, 132, .6); }
+  .bhead { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 12px 16px 4px; }
+  .bhead b { color: var(--fg); font: 600 17px "Inter Tight", sans-serif; }
+  .place { font: 600 12px "JetBrains Mono", monospace; padding: 3px 10px; border-radius: 99px; background: var(--bg3); color: var(--mute); }
+  .board.win .place { background: rgba(61, 220, 132, .14); color: #5ef0a0; }
+  .bdesc { padding: 0 16px 10px; font-size: 13px; line-height: 1.45; color: var(--mute); min-height: 4.4em; }
+  canvas { display: block; width: 100%; cursor: crosshair; touch-action: none; background: #070c18; }
+  .stats { display: flex; flex-wrap: wrap; gap: 6px 16px; padding: 10px 16px; font: 12px "JetBrains Mono", monospace; color: var(--mute); border-top: 1px solid var(--line); }
+  .stats b { color: var(--fg); font-weight: 500; }
+  .legend { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px; font-size: 13px; color: var(--mute); }
+  .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+  @media (max-width: 760px) { .boards { grid-template-columns: 1fr; } label { margin-left: 0; } header { flex-direction: column-reverse; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Pathfinding race</h1>
+      <p>Four search algorithms, one map. Each explores one cell per tick — watch who reaches the goal first, and whose route is actually cheapest. Draw walls, paint mud (costs 5 to cross), or drag the start and goal.</p>
+    </div>
+    <a class="back" href="../index.html#projects">← Portfolio</a>
+  </header>
+
+  <div class="bar">
+    <button class="go" id="race" type="button">▶ Race</button>
+    <span class="sep"></span>
+    <button class="on" data-tool="wall" type="button">Wall</button>
+    <button data-tool="mud" type="button">Mud</button>
+    <button data-tool="erase" type="button">Erase</button>
+    <span class="sep"></span>
+    <button id="maze" type="button">Maze</button>
+    <button id="scatter" type="button">Random walls</button>
+    <button id="mudfield" type="button">Mud patches</button>
+    <button id="clear" type="button">Clear</button>
+    <label>Speed <input type="range" id="speed" min="1" max="12" value="4"></label>
+  </div>
+
+  <div class="boards" id="boards"></div>
+
+  <div class="legend">
+    <span><i style="background:#3ddc84"></i>Start</span><span><i style="background:#ff5c8a"></i>Goal</span>
+    <span><i style="background:#9aa8c7"></i>Wall</span><span><i style="background:#5a4320"></i>Mud (cost 5)</span>
+    <span><i style="background:#7dd3fc"></i>Frontier</span><span><i style="background:rgba(79,140,255,.3)"></i>Explored</span>
+    <span><i style="background:#fbbf24"></i>Path found</span>
+  </div>
+</div>
+
+<script>
+(() => {
+  const COLS = 41, ROWS = 25, WALL = 1, MUD = 2, MUD_COST = 5;
+  const grid = new Uint8Array(COLS * ROWS);
+  let start = idx(4, 12), goal = idx(36, 12);
+  function idx(x, y) { return y * COLS + x; }
+  const cost = (i) => (grid[i] === MUD ? MUD_COST : 1);
+  const manhattan = (i) => Math.abs((i % COLS) - (goal % COLS)) + Math.abs(((i / COLS) | 0) - ((goal / COLS) | 0));
+  function neighbours(i) {
+    const x = i % COLS, y = (i / COLS) | 0, out = [];
+    if (y > 0) out.push(i - COLS); if (x < COLS - 1) out.push(i + 1);
+    if (y < ROWS - 1) out.push(i + COLS); if (x > 0) out.push(i - 1);
+    return out.filter((n) => grid[n] !== WALL);
+  }
+
+  // Binary min-heap keyed by priority; ties broken by insertion order so runs are deterministic.
+  class Heap {
+    constructor() { this.a = []; this.n = 0; }
+    get size() { return this.a.length; }
+    push(item, pr) { const a = this.a; a.push([pr, this.n++, item]); let i = a.length - 1;
+      while (i > 0) { const p = (i - 1) >> 1; if (this.less(a[p], a[i])) break; [a[p], a[i]] = [a[i], a[p]]; i = p; } }
+    pop() { const a = this.a, top = a[0], last = a.pop();
+      if (a.length) { a[0] = last; let i = 0;
+        for (;;) { const l = 2 * i + 1, r = l + 1; let m = i;
+          if (l < a.length && this.less(a[l], a[m])) m = l; if (r < a.length && this.less(a[r], a[m])) m = r;
+          if (m === i) break; [a[m], a[i]] = [a[i], a[m]]; i = m; } }
+      return top[2]; }
+    less(x, y) { return x[0] < y[0] || (x[0] === y[0] && x[1] < y[1]); }
+  }
+
+  // Every algorithm is a generator that yields after expanding one cell, so the race is fair per step.
+  // priority(g, i) decides the order: BFS = arrival order, Dijkstra = cost so far, A* = cost + heuristic, Greedy = heuristic.
+  const ALGOS = [
+    { name: "BFS", desc: "Breadth-first: explores in rings. Ignores mud, so its path is shortest in steps, not in cost.", pr: null },
+    { name: "Dijkstra", desc: "Always expands the cheapest cell so far. Guaranteed cheapest path, but explores widely.", pr: (g) => g },
+    { name: "A*", desc: "Dijkstra plus a distance-to-goal estimate. Still cheapest path, far fewer cells explored.", pr: (g, i) => g + manhattan(i) },
+    { name: "Greedy", desc: "Best-first: only chases the distance estimate. Very fast, but its path is often not the cheapest.", pr: (g, i) => manhattan(i) },
+  ];
+  function* search(algo, s) {
+    const g = new Float64Array(COLS * ROWS).fill(Infinity), from = new Int32Array(COLS * ROWS).fill(-1);
+    g[start] = 0;
+    const queue = algo.pr ? new Heap() : [];
+    let head = 0;
+    const push = (i) => { if (algo.pr) queue.push(i, algo.pr(g[i], i)); else queue.push(i); s.state[i] = 1; };
+    push(start);
+    while (algo.pr ? queue.size : head < queue.length) {
+      const cur = algo.pr ? queue.pop() : queue[head++];
+      if (s.state[cur] === 2) continue; // stale heap entry
+      s.state[cur] = 2; s.explored++;
+      if (cur === goal) break;
+      for (const n of neighbours(cur)) {
+        const ng = g[cur] + cost(n);
+        if (algo.pr ? ng < g[n] : g[n] === Infinity) { g[n] = ng; from[n] = cur; push(n); }
+      }
+      yield;
+    }
+    if (from[goal] !== -1 || start === goal) {
+      for (let c = goal; c !== -1; c = from[c]) s.path.unshift(c);
+      s.cost = g[goal];
+    }
+  }
+
+  // ---------- Boards ----------
+  const boardsEl = document.getElementById("boards");
+  const boards = ALGOS.map((algo) => {
+    const el = document.createElement("div");
+    el.className = "board";
+    el.innerHTML = `<div class="bhead"><b></b><span class="place">ready</span></div><p class="bdesc"></p><canvas></canvas>
+      <div class="stats"><span>explored <b class="ex">0</b></span><span>path cost <b class="co">–</b></span><span>steps <b class="st">–</b></span></div>`;
+    el.querySelector("b").textContent = algo.name;
+    el.querySelector(".bdesc").textContent = algo.desc;
+    boardsEl.appendChild(el);
+    return { algo, el, canvas: el.querySelector("canvas"), ctx: el.querySelector("canvas").getContext("2d"), s: null, it: null, done: false };
+  });
+
+  function fresh(b) { b.s = { state: new Uint8Array(COLS * ROWS), explored: 0, path: [], cost: null }; b.it = null; b.done = false; }
+  boards.forEach(fresh);
+
+  let cell = 10;
+  function sizeBoards() {
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    boards.forEach((b) => {
+      const w = b.canvas.clientWidth || 600;
+      cell = w / COLS;
+      b.canvas.width = w * dpr; b.canvas.height = cell * ROWS * dpr;
+      b.canvas.style.height = cell * ROWS + "px";
+      b.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    });
+    drawAll();
+  }
+
+  function draw(b) {
+    const { ctx, s } = b, c = cell;
+    ctx.fillStyle = "#070c18"; ctx.fillRect(0, 0, COLS * c, ROWS * c);
+    for (let i = 0; i < grid.length; i++) {
+      const x = (i % COLS) * c, y = ((i / COLS) | 0) * c;
+      let col = null;
+      if (grid[i] === WALL) col = "#9aa8c7";
+      else if (s.state[i] === 2) col = grid[i] === MUD ? "#7a5f30" : "rgba(79,140,255,.3)";
+      else if (s.state[i] === 1) col = "#7dd3fc";
+      else if (grid[i] === MUD) col = "#5a4320";
+      if (col) { ctx.fillStyle = col; ctx.fillRect(x + .5, y + .5, c - 1, c - 1); }
+    }
+    if (s.path.length) {
+      ctx.strokeStyle = "#fbbf24"; ctx.lineWidth = Math.max(2, c * .35); ctx.lineJoin = ctx.lineCap = "round";
+      ctx.beginPath();
+      s.path.forEach((i, k) => { const x = (i % COLS + .5) * c, y = (((i / COLS) | 0) + .5) * c; k ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+      ctx.stroke();
+    }
+    for (const [i, col] of [[start, "#3ddc84"], [goal, "#ff5c8a"]]) {
+      ctx.fillStyle = col; ctx.beginPath();
+      ctx.arc((i % COLS + .5) * c, (((i / COLS) | 0) + .5) * c, c * .42, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+  function drawAll() { boards.forEach(draw); }
+
+  function updateStats(b) {
+    b.el.querySelector(".ex").textContent = b.s.explored;
+    b.el.querySelector(".co").textContent = b.s.cost == null ? (b.done ? "no path" : "–") : b.s.cost;
+    b.el.querySelector(".st").textContent = b.s.path.length ? b.s.path.length - 1 : "–";
+  }
+
+  // ---------- Race loop ----------
+  let racing = false, finishOrder = [];
+  function resetRace() {
+    racing = false; finishOrder = [];
+    boards.forEach((b) => { fresh(b); b.el.classList.remove("win"); b.el.querySelector(".place").textContent = "ready"; updateStats(b); });
+    drawAll();
+  }
+  function race() {
+    resetRace();
+    boards.forEach((b) => { b.it = search(b.algo, b.s); });
+    racing = true; last = 0; carry = 0;
+    requestAnimationFrame(tick);
+  }
+  // Fixed cells-per-second rate (not per frame), so the race runs at the same speed on 60 Hz and 144 Hz screens.
+  let last = 0, carry = 0;
+  function tick(now) {
+    if (!racing) return;
+    if (!last) last = now;
+    carry += Math.min(100, now - last) / 1000 * +document.getElementById("speed").value * 45;
+    last = now;
+    for (; carry >= 1; carry--) {
+      for (const b of boards) {
+        if (b.done) continue;
+        if (b.it.next().done) { b.done = true; finishOrder.push(b); }
+      }
+    }
+    boards.forEach((b) => { draw(b); updateStats(b); });
+    if (boards.every((b) => b.done)) { racing = false; rank(); return; }
+    requestAnimationFrame(tick);
+  }
+  function rank() {
+    // Fewest cells explored wins the race; path cost shows who found the cheapest route.
+    const found = boards.filter((b) => b.s.cost != null).sort((a, b) => a.s.explored - b.s.explored);
+    const best = Math.min(...found.map((b) => b.s.cost));
+    boards.forEach((b) => {
+      const p = found.indexOf(b), tag = b.el.querySelector(".place");
+      tag.textContent = p < 0 ? "no path" : ["1st", "2nd", "3rd", "4th"][p] + (b.s.cost === best ? " · cheapest" : " · +" + (b.s.cost - best));
+      b.el.classList.toggle("win", p === 0);
+    });
+  }
+
+  // ---------- Editing ----------
+  let tool = "wall", dragging = null, painting = false;
+  document.querySelectorAll("[data-tool]").forEach((btn) => btn.addEventListener("click", () => {
+    tool = btn.dataset.tool;
+    document.querySelectorAll("[data-tool]").forEach((x) => x.classList.toggle("on", x === btn));
+  }));
+  function cellAt(e, canvas) {
+    const r = canvas.getBoundingClientRect();
+    const x = Math.floor((e.clientX - r.left) / (r.width / COLS)), y = Math.floor((e.clientY - r.top) / (r.height / ROWS));
+    return x < 0 || y < 0 || x >= COLS || y >= ROWS ? -1 : idx(x, y);
+  }
+  function paint(i) {
+    if (i < 0 || i === start || i === goal) return;
+    grid[i] = tool === "wall" ? WALL : tool === "mud" ? MUD : 0;
+  }
+  boards.forEach((b) => {
+    b.canvas.addEventListener("pointerdown", (e) => {
+      const i = cellAt(e, b.canvas);
+      if (i < 0) return;
+      b.canvas.setPointerCapture(e.pointerId);
+      resetRace();
+      if (i === start) dragging = "start"; else if (i === goal) dragging = "goal"; else { painting = true; paint(i); }
+      drawAll();
+    });
+    b.canvas.addEventListener("pointermove", (e) => {
+      if (!dragging && !painting) return;
+      const i = cellAt(e, b.canvas);
+      if (i < 0) return;
+      if (dragging && grid[i] !== WALL && i !== start && i !== goal) { if (dragging === "start") start = i; else goal = i; }
+      else if (painting) paint(i);
+      drawAll();
+    });
+    b.canvas.addEventListener("pointerup", () => { dragging = null; painting = false; });
+  });
+
+  // ---------- Generators for maps ----------
+  function clearMap() { grid.fill(0); }
+  function maze() {
+    // Recursive backtracker on odd cells, then knock out a few extra walls so there are several routes to compare.
+    grid.fill(WALL);
+    const stack = [idx(1, 1)]; grid[idx(1, 1)] = 0;
+    while (stack.length) {
+      const c = stack[stack.length - 1], x = c % COLS, y = (c / COLS) | 0;
+      const opts = [[2, 0], [-2, 0], [0, 2], [0, -2]].filter(([dx, dy]) => {
+        const nx = x + dx, ny = y + dy;
+        return nx > 0 && ny > 0 && nx < COLS - 1 && ny < ROWS - 1 && grid[idx(nx, ny)] === WALL;
+      });
+      if (!opts.length) { stack.pop(); continue; }
+      const [dx, dy] = opts[(Math.random() * opts.length) | 0];
+      grid[idx(x + dx / 2, y + dy / 2)] = 0; grid[idx(x + dx, y + dy)] = 0;
+      stack.push(idx(x + dx, y + dy));
+    }
+    for (let k = 0; k < 90; k++) {
+      const x = 1 + ((Math.random() * (COLS - 2)) | 0), y = 1 + ((Math.random() * (ROWS - 2)) | 0);
+      if ((x + y) % 2 === 1) grid[idx(x, y)] = 0;
+    }
+    start = idx(1, 1); goal = idx(COLS - 2, ROWS - 2);
+  }
+  function scatter() { clearMap(); for (let i = 0; i < grid.length; i++) if (Math.random() < 0.28) grid[i] = WALL; grid[start] = grid[goal] = 0; }
+  function mudPatches() {
+    for (let k = 0; k < 7; k++) {
+      const cx = 6 + Math.random() * (COLS - 12), cy = 3 + Math.random() * (ROWS - 6), r = 2 + Math.random() * 3.5;
+      for (let i = 0; i < grid.length; i++) {
+        const x = i % COLS, y = (i / COLS) | 0;
+        if (grid[i] !== WALL && (x - cx) ** 2 + (y - cy) ** 2 < r * r) grid[i] = MUD;
+      }
+    }
+    grid[start] = grid[goal] = 0;
+  }
+  const act = (fn) => () => { fn(); resetRace(); };
+  document.getElementById("race").addEventListener("click", race);
+  document.getElementById("maze").addEventListener("click", act(maze));
+  document.getElementById("scatter").addEventListener("click", act(scatter));
+  document.getElementById("mudfield").addEventListener("click", act(mudPatches));
+  document.getElementById("clear").addEventListener("click", act(clearMap));
+
+  // Default map: a wall with gaps plus mud, so the four algorithms visibly disagree on the first run.
+  for (let y = 2; y < ROWS - 2; y++) if (y !== 5 && y !== 19) grid[idx(20, y)] = WALL;
+  for (let y = 0; y < ROWS; y++) if (y < 21 || y > 22) for (let x = 25; x <= 28; x++) grid[idx(x, y)] = MUD;
+  addEventListener("resize", sizeBoards);
+  sizeBoards();
+  resetRace();
+  if (new URLSearchParams(location.search).has("autorace")) race();
+})();
+</script>
+</body>
+</html>
