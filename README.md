@@ -10,6 +10,8 @@ A clean, dark single-page site: an animated AI-receptionist call feed in the her
 
 **[AI Inbox Assistant](https://github.com/plompee/ai-inbox)** — the email companion (Python, FastAPI, Claude structured outputs); also shown as a labelled demo recording (`assets/video/inbox.mp4`).
 
+**[Ask the Handbook](https://github.com/plompee/ask-the-handbook)** — chat with your documents, answers cited to the exact passage (Python, BM25 retrieval, Claude citations); labelled demo recording in `assets/video/handbook.mp4`.
+
 ## Live demos
 
 | Demo | Path | What it does |
