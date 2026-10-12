@@ -33,6 +33,16 @@ for (const el of $$(".card, .tile, .contact-card")) {
   }, { passive: true });
 }
 
+/* ---------- Colour themes: dots in the nav, choice remembered on this device ---------- */
+const themeBtns = $$(".themes button");
+function setTheme(name, save) {
+  document.documentElement.dataset.theme = name;
+  themeBtns.forEach((b) => b.setAttribute("aria-pressed", b.dataset.theme === name));
+  if (save) try { localStorage.setItem("theme", name); } catch { /* private mode: just don't remember */ }
+}
+setTheme(document.documentElement.dataset.theme || "aurora", false);
+themeBtns.forEach((b) => b.addEventListener("click", () => setTheme(b.dataset.theme, true)));
+
 /* ---------- Bento: live Canterbury clock ---------- */
 const clock = $("#clock");
 if (clock) {

@@ -10,6 +10,7 @@
 <script>
   // Reveal animations only run once script.js loads; otherwise the page stays fully visible.
   document.documentElement.classList.add("js");
+  try { var t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
   setTimeout(function () { if (!window.__ready) document.documentElement.classList.remove("js"); }, 3000);
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -31,6 +32,14 @@
       <a href="#journey">Journey</a>
       <a href="#process">Process</a>
       <a href="#contact">Contact</a>
+      <div class="themes" role="group" aria-label="Colour theme">
+        <button type="button" data-theme="aurora" style="--c1:#8b7bff;--c2:#5eead4" aria-label="Aurora colours" title="Aurora"></button>
+        <button type="button" data-theme="ocean" style="--c1:#38bdf8;--c2:#818cf8" aria-label="Ocean colours" title="Ocean"></button>
+        <button type="button" data-theme="sunset" style="--c1:#fb923c;--c2:#f472b6" aria-label="Sunset colours" title="Sunset"></button>
+        <button type="button" data-theme="emerald" style="--c1:#10b981;--c2:#a3e635" aria-label="Emerald colours" title="Emerald"></button>
+        <button type="button" data-theme="rose" style="--c1:#f472b6;--c2:#fcd34d" aria-label="Rose colours" title="Rose"></button>
+        <button type="button" data-theme="mono" style="--c1:#e4e4e7;--c2:#71717a" aria-label="Mono colours" title="Mono"></button>
+      </div>
     </nav>
     <a href="Dima_Livak_CV.pdf" class="btn btn-sm nav-cv" target="_blank" rel="noopener">Download CV</a>
     <button class="menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-links"><span></span><span></span></button>
@@ -159,11 +168,22 @@
           <ul class="tags"><li>HTML &amp; CSS</li><li>JavaScript</li><li>Git &amp; GitHub</li></ul>
         </div>
         <div class="stage web">
-          <div class="win"><div class="win-bar"><i></i><i></i><i></i></div>
+          <div class="win">
+            <div class="win-bar"><i></i><i></i><i></i><span class="url">plompee.github.io/projects/estate-agency</span></div>
             <div class="site">
-              <div class="b b-nav"><i></i><i></i><i></i></div>
-              <div class="b b-hero"><b>Find a place you'll love</b><span>Search</span></div>
-              <div class="b-grid"><div class="b b-card"></div><div class="b b-card"></div><div class="b b-card"></div></div>
+              <div class="b b-nav"><span class="b-logo"><em>H&amp;G</em>Hartley &amp; Grove</span><span class="b-links"><i>Buy</i><i>Rent</i><i>Sell</i><i>Valuation</i></span><span class="b-btn">Contact</span></div>
+              <div class="b b-hero">
+                <small>Homes across Essex · est. 1987</small>
+                <b>Find a place you'll love to live</b>
+                <div class="b-search"><span>📍 Grays, Essex</span><span>£ Any price</span><span>🛏 2+ beds</span><em>Search</em></div>
+              </div>
+              <div class="b b-title"><b>Featured homes</b><span>78 properties</span></div>
+              <div class="b-grid">
+                <div class="b b-card"><div class="b-photo p1"><em>New</em></div><b>£425,000</b><span>3 bed semi · Grays</span><small>3 bd · 2 ba · garden</small></div>
+                <div class="b b-card"><div class="b-photo p2"><em>To let</em></div><b>£1,250 pcm</b><span>2 bed flat · Chafford Hundred</span><small>2 bd · 1 ba · parking</small></div>
+                <div class="b b-card"><div class="b-photo p3"></div><b>£695,000</b><span>4 bed detached · Orsett</span><small>4 bd · 3 ba · double garage</small></div>
+              </div>
+              <div class="b b-foot"><span>✓ Deployed to GitHub Pages</span><span>Responsive · no frameworks · real API data</span></div>
             </div>
           </div>
         </div>
