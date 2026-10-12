@@ -24,7 +24,7 @@ const sectionObserver = new IntersectionObserver((entries) => entries.forEach((e
 $$("main section[id]").forEach((s) => sectionObserver.observe(s));
 
 /* ---------- Soft spotlight that follows the mouse across glass panels ---------- */
-for (const el of $$(".card, .feed, .contact-card")) {
+for (const el of $$(".card, .tile, .contact-card")) {
   el.classList.add("spot");
   el.addEventListener("pointermove", (e) => {
     const r = el.getBoundingClientRect();
@@ -32,6 +32,54 @@ for (const el of $$(".card, .feed, .contact-card")) {
     el.style.setProperty("--my", `${e.clientY - r.top}px`);
   }, { passive: true });
 }
+
+/* ---------- Bento: live Canterbury clock ---------- */
+const clock = $("#clock");
+if (clock) {
+  const tick = () => {
+    const now = new Date(), opts = { timeZone: "Europe/London" };
+    clock.textContent = now.toLocaleTimeString("en-GB", { ...opts, hour: "2-digit", minute: "2-digit" });
+    const hour = Number(now.toLocaleString("en-GB", { ...opts, hour: "2-digit", hour12: false }));
+    $("#clock-note").textContent = hour >= 7 && hour < 22 ? "daytime here · replies within a day" : "night-time here · replies within a day";
+  };
+  tick();
+  setInterval(tick, 30_000);
+}
+
+/* ---------- Projects: filter the "More projects" grid ---------- */
+const filterBtns = $$("#filters button");
+filterBtns.forEach((btn) => btn.addEventListener("click", () => {
+  const f = btn.dataset.f;
+  filterBtns.forEach((b) => b.classList.toggle("on", b === btn));
+  $$("#mini-grid .mini").forEach((card) => card.classList.toggle("hide", f !== "all" && !card.dataset.cat.split(" ").includes(f)));
+}));
+
+/* ---------- Journey: the line fills as you scroll through the timeline ---------- */
+const timeline = $("#timeline");
+if (timeline) {
+  let queued = false;
+  const fill = () => {
+    queued = false;
+    const r = timeline.getBoundingClientRect();
+    const p = Math.min(1, Math.max(0, (innerHeight * 0.65 - r.top) / r.height));
+    timeline.style.setProperty("--fill", p.toFixed(3));
+  };
+  addEventListener("scroll", () => { if (!queued) { queued = true; requestAnimationFrame(fill); } }, { passive: true });
+  fill();
+}
+
+/* ---------- Contact: copy email ---------- */
+const copyBtn = $("#copy-email");
+copyBtn?.addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(copyBtn.dataset.email);
+    copyBtn.classList.add("copied");
+    $("#copy-tag").textContent = "Copied ✓";
+    setTimeout(() => { copyBtn.classList.remove("copied"); $("#copy-tag").textContent = "Copy"; }, 2200);
+  } catch {
+    location.href = `mailto:${copyBtn.dataset.email}`;
+  }
+});
 
 /* ---------- Scroll reveals ---------- */
 const revealObserver = new IntersectionObserver((entries) => entries.forEach((e) => {

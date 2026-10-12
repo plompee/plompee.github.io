@@ -16,6 +16,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="sections.css">
 </head>
 <body>
 
@@ -27,8 +28,8 @@
     <nav class="nav-links" id="nav-links" aria-label="Primary">
       <a href="#skills">Skills</a>
       <a href="#projects">Projects</a>
-      <a href="#work">Experience</a>
-      <a href="#education">Education</a>
+      <a href="#journey">Journey</a>
+      <a href="#process">Process</a>
       <a href="#contact">Contact</a>
     </nav>
     <a href="Dima_Livak_CV.pdf" class="btn btn-sm nav-cv" target="_blank" rel="noopener">Download CV</a>
@@ -37,23 +38,52 @@
 </header>
 
 <main>
-  <!-- HERO -->
+  <!-- HERO: bento grid -->
   <section class="hero" id="top">
-    <div class="hero-inner">
-      <div class="hero-copy">
+    <div class="bento">
+      <div class="tile t-intro">
         <p class="status"><i class="dot"></i>Open to remote, part-time work</p>
         <h1>Dima Livak</h1>
         <p class="role">I build <span>AI that answers calls and replies to emails</span> — so businesses never miss a client.</p>
-        <p class="sub">Computer Science &amp; AI student · University of Kent · AI automation at Apex27</p>
         <div class="cta">
-          <a class="btn" href="#skills">See my skills ↓</a>
-          <a class="btn ghost" href="#contact">Contact me</a>
+          <a class="btn" href="#projects">See my work ↓</a>
+          <a class="btn ghost" href="#contact">Let's talk</a>
         </div>
       </div>
-      <div class="feed" aria-label="Example: an AI receptionist handling calls">
+
+      <div class="tile t-feed feed" aria-label="Example: an AI receptionist handling calls">
         <div class="feed-head"><b>AI receptionist</b><span class="live"><i></i>Live</span></div>
         <ol class="calls" id="calls"></ol>
         <div class="feed-foot"><span>Calls handled today</span><b id="handled">12</b></div>
+      </div>
+
+      <div class="tile t-mini t-clock">
+        <span class="t-label">Based in</span>
+        <span class="t-big" id="clock">--:--</span>
+        <small>Canterbury, UK · <span id="clock-note">usually replies within a day</span></small>
+      </div>
+      <div class="tile t-mini">
+        <span class="t-label">Studying</span>
+        <b class="t-mid">BSc Computer Science &amp; AI</b>
+        <small>University of Kent · Year 2 · Year in Industry</small>
+      </div>
+      <div class="tile t-mini">
+        <span class="t-label">Built</span>
+        <span class="t-big">9</span>
+        <small>projects, including 3 full AI products</small>
+      </div>
+      <div class="tile t-mini">
+        <span class="t-label">Speaks</span>
+        <ul class="langs"><li>Ukrainian</li><li>English</li><li>Russian</li><li>Polish</li></ul>
+      </div>
+
+      <div class="tile t-stack" aria-label="Tools I use">
+        <div class="marquee">
+          <div class="marquee-track">
+            <span>Python</span><span>JavaScript</span><span>Node.js</span><span>FastAPI</span><span>Claude API</span><span>SQLite</span><span>REST APIs</span><span>HTML &amp; CSS</span><span>Git &amp; GitHub</span><span>Pydantic</span><span>Canvas &amp; WebGL</span>
+            <span aria-hidden="true">Python</span><span aria-hidden="true">JavaScript</span><span aria-hidden="true">Node.js</span><span aria-hidden="true">FastAPI</span><span aria-hidden="true">Claude API</span><span aria-hidden="true">SQLite</span><span aria-hidden="true">REST APIs</span><span aria-hidden="true">HTML &amp; CSS</span><span aria-hidden="true">Git &amp; GitHub</span><span aria-hidden="true">Pydantic</span><span aria-hidden="true">Canvas &amp; WebGL</span>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -156,143 +186,155 @@
     </div>
   </section>
 
-  <!-- PROJECTS -->
+  <!-- PROJECTS: three featured products, then a filterable grid -->
   <section class="sec" id="projects">
     <div class="sec-head" data-r><span>02</span><h2>Selected <em>work</em></h2></div>
-    <div class="grid">
-      <article class="card card-wide" data-r style="--c1:#5b8cff;--c2:#8b7bff">
-        <a class="pvis pvid" href="https://github.com/plompee/ai-receptionist" target="_blank" rel="noopener" aria-label="View on GitHub"><video muted loop playsinline preload="none" poster="assets/video/receptionist.jpg" data-src="assets/video/receptionist.mp4"></video><span class="demo-label">Demo recording · AI answers scripted for this video</span><span class="play">View on GitHub ↗</span></a>
-        <div class="card-body">
+
+    <div class="features">
+      <article class="feature" data-r>
+        <a class="feature-media pvid" href="https://github.com/plompee/ai-receptionist" target="_blank" rel="noopener" aria-label="AI Receptionist Studio on GitHub"><video muted loop playsinline preload="none" poster="assets/video/receptionist.jpg" data-src="assets/video/receptionist.mp4"></video><span class="demo-label">Demo recording · AI answers scripted for this video</span><span class="play">View on GitHub ↗</span></a>
+        <div class="feature-body">
+          <span class="feature-n">01</span>
+          <p class="meta">Full-stack AI · Node.js · Claude API</p>
           <h3>AI Receptionist Studio</h3>
-          <p class="meta">New · Full-stack AI · Claude API</p>
-          <p>A universal AI phone receptionist: set up any business — services, prices, opening hours, FAQs, languages, tone — and it answers calls by voice or text. It books, moves and cancels appointments, takes messages, transfers callers and blocks spam, with booking rules enforced in code so callers can't talk it out of them. Includes a live call screen, week diary and call log.</p>
-          <ul class="tags"><li>Node.js</li><li>Claude API · tool use</li><li>Speech recognition &amp; TTS</li><li>13 languages</li></ul>
+          <p>A universal AI phone receptionist. Set up any business — services, prices, hours, FAQs, languages, tone — and it answers calls by voice or text: books, moves and cancels appointments, takes messages, transfers callers and blocks spam. Booking rules are enforced in code, so callers can't talk it out of them.</p>
+          <ul class="tags"><li>Node.js</li><li>Tool use</li><li>Speech recognition</li><li>13 languages</li></ul>
           <div class="links"><a class="btn btn-sm" href="https://github.com/plompee/ai-receptionist" target="_blank" rel="noopener">View on GitHub</a><a class="btn btn-sm ghost" href="https://github.com/plompee/ai-receptionist#run-it" target="_blank" rel="noopener">Run it yourself</a></div>
         </div>
       </article>
-      <article class="card card-wide" data-r style="--c1:#4fd1ff;--c2:#5b8cff">
-        <a class="pvis pvid" href="https://github.com/plompee/ai-inbox" target="_blank" rel="noopener" aria-label="View on GitHub"><video muted loop playsinline preload="none" poster="assets/video/inbox.jpg" data-src="assets/video/inbox.mp4"></video><span class="demo-label">Demo recording · AI answers scripted for this video</span><span class="play">View on GitHub ↗</span></a>
-        <div class="card-body">
+      <article class="feature" data-r>
+        <a class="feature-media pvid" href="https://github.com/plompee/ai-inbox" target="_blank" rel="noopener" aria-label="AI Inbox Assistant on GitHub"><video muted loop playsinline preload="none" poster="assets/video/inbox.jpg" data-src="assets/video/inbox.mp4"></video><span class="demo-label">Demo recording · AI answers scripted for this video</span><span class="play">View on GitHub ↗</span></a>
+        <div class="feature-body">
+          <span class="feature-n">02</span>
+          <p class="meta">Python · FastAPI · Structured outputs</p>
           <h3>AI Inbox Assistant</h3>
-          <p class="meta">New · Python · FastAPI · Claude structured outputs</p>
-          <p>The email half of an AI front desk. It sorts every incoming email (bookings, complaints, invoices, spam…), pulls out names, dates and amounts, flags what needs a person — including phishing that tries to give it orders — and drafts a reply in the business's tone and the sender's language for a human to approve. Imports its business profile from AI Receptionist Studio.</p>
-          <ul class="tags"><li>Python</li><li>FastAPI</li><li>SQLite</li><li>Pydantic structured outputs</li></ul>
+          <p>The email half of an AI front desk. It sorts every email — bookings, complaints, invoices, spam — pulls out names, dates and amounts, flags what needs a person (including phishing that tries to give it orders) and drafts a reply in the sender's language for a human to approve.</p>
+          <ul class="tags"><li>Python</li><li>FastAPI</li><li>SQLite</li><li>Pydantic</li></ul>
           <div class="links"><a class="btn btn-sm" href="https://github.com/plompee/ai-inbox" target="_blank" rel="noopener">View on GitHub</a><a class="btn btn-sm ghost" href="https://github.com/plompee/ai-inbox#run-it" target="_blank" rel="noopener">Run it yourself</a></div>
         </div>
       </article>
-      <article class="card card-wide" data-r style="--c1:#8b7bff;--c2:#4fd1ff">
-        <a class="pvis pvid" href="https://github.com/plompee/ask-the-handbook" target="_blank" rel="noopener" aria-label="View on GitHub"><video muted loop playsinline preload="none" poster="assets/video/handbook.jpg" data-src="assets/video/handbook.mp4"></video><span class="demo-label">Demo recording · search is real, AI answer wording scripted</span><span class="play">View on GitHub ↗</span></a>
-        <div class="card-body">
+      <article class="feature" data-r>
+        <a class="feature-media pvid" href="https://github.com/plompee/ask-the-handbook" target="_blank" rel="noopener" aria-label="Ask the Handbook on GitHub"><video muted loop playsinline preload="none" poster="assets/video/handbook.jpg" data-src="assets/video/handbook.mp4"></video><span class="demo-label">Demo recording · search is real, AI answer wording scripted</span><span class="play">View on GitHub ↗</span></a>
+        <div class="feature-body">
+          <span class="feature-n">03</span>
+          <p class="meta">RAG · Python · Citations</p>
           <h3>Ask the Handbook</h3>
-          <p class="meta">New · RAG · Python · Claude citations</p>
-          <p>Chat with your own documents. Upload handbooks, policies or manuals and ask questions in plain language: every answer links each claim to the exact quoted passage, with the document and page. If it's not in your files, it says so. Retrieval is a hand-written BM25 search — no embeddings service.</p>
-          <ul class="tags"><li>Retrieval-augmented generation</li><li>BM25 search</li><li>FastAPI</li><li>PDF parsing</li></ul>
+          <p>Chat with your own documents. Upload handbooks, policies or manuals and ask in plain language: every claim in the answer links to the exact quoted passage, with document and page. If it isn't in your files, it says so. Retrieval is a hand-written BM25 search.</p>
+          <ul class="tags"><li>Retrieval-augmented generation</li><li>BM25</li><li>PDF parsing</li></ul>
           <div class="links"><a class="btn btn-sm" href="https://github.com/plompee/ask-the-handbook" target="_blank" rel="noopener">View on GitHub</a><a class="btn btn-sm ghost" href="https://github.com/plompee/ask-the-handbook#run-it" target="_blank" rel="noopener">Run it yourself</a></div>
         </div>
       </article>
-      <article class="card card-wide" data-r style="--c1:#4f8cff;--c2:#fbbf24">
-        <a class="pvis pvid" href="projects/pathfinding.html" aria-label="Open live demo"><video muted loop playsinline preload="none" poster="assets/video/pathfinding.jpg" data-src="assets/video/pathfinding.mp4"></video><span class="play">Live demo ↗</span></a>
-        <div class="card-body">
-          <h3>Pathfinding race</h3>
-          <p class="meta">Algorithms · Data structures</p>
-          <p>BFS, Dijkstra, A* and greedy best-first race on the same map, one cell per tick. Draw walls and mud and see the trade-off: the fastest search isn't always the cheapest route. Built on a binary-heap priority queue, with every algorithm written as a step-by-step generator.</p>
-          <ul class="tags"><li>Algorithms</li><li>A* / Dijkstra</li><li>Priority queue</li><li>Canvas</li></ul>
-          <div class="links"><a class="btn btn-sm" href="projects/pathfinding.html">Live demo</a><a class="btn btn-sm ghost" href="https://github.com/plompee/plompee.github.io/blob/main/projects/pathfinding.html" target="_blank" rel="noopener">Source</a></div>
-        </div>
+    </div>
+
+    <div class="more-head" data-r>
+      <h3>More projects <small>— try them live in your browser</small></h3>
+      <div class="filters" id="filters" role="group" aria-label="Filter projects">
+        <button type="button" class="on" data-f="all">All</button><button type="button" data-f="ai">AI</button><button type="button" data-f="web">Web</button><button type="button" data-f="algo">Algorithms</button><button type="button" data-f="creative">Creative</button>
+      </div>
+    </div>
+    <div class="mini-grid" id="mini-grid">
+      <article class="card mini" data-cat="algo creative">
+        <a class="pvis pvid" href="projects/pathfinding.html" aria-label="Open Pathfinding race"><video muted loop playsinline preload="none" poster="assets/video/pathfinding.jpg" data-src="assets/video/pathfinding.mp4"></video><span class="play">Live demo ↗</span></a>
+        <div class="card-body"><h3>Pathfinding race</h3><p>BFS, Dijkstra, A* and greedy race on one map — the fastest search isn't always the cheapest route.</p>
+          <div class="links"><a class="btn btn-sm" href="projects/pathfinding.html">Live demo</a><a class="btn btn-sm ghost" href="https://github.com/plompee/plompee.github.io/blob/main/projects/pathfinding.html" target="_blank" rel="noopener">Source</a></div></div>
       </article>
-      <article class="card" data-r style="--c1:#4f8cff;--c2:#7dd3fc">
-        <a class="pvis pvid" href="projects/call-triage.html" aria-label="Open live demo"><video muted loop playsinline preload="none" poster="assets/video/triage.jpg" data-src="assets/video/triage.mp4"></video><span class="play">Live demo ↗</span></a>
-        <div class="card-body">
-          <h3>AI call triage</h3>
-          <p>A recreation of the call-routing system I helped build at Apex27. Play a caller and watch it get transcribed, scored against intent patterns and routed in real time.</p>
-          <ul class="tags"><li>JavaScript</li><li>Intent scoring</li><li>HTML/CSS</li></ul>
-          <div class="links"><a class="btn btn-sm" href="projects/call-triage.html">Live demo</a><a class="btn btn-sm ghost" href="https://github.com/plompee/plompee.github.io/blob/main/projects/call-triage.html" target="_blank" rel="noopener">Source</a></div>
-        </div>
+      <article class="card mini" data-cat="ai web">
+        <a class="pvis pvid" href="projects/call-triage.html" aria-label="Open AI call triage"><video muted loop playsinline preload="none" poster="assets/video/triage.jpg" data-src="assets/video/triage.mp4"></video><span class="play">Live demo ↗</span></a>
+        <div class="card-body"><h3>AI call triage</h3><p>The call-routing system from Apex27, recreated: transcribe, score intent, route — in real time.</p>
+          <div class="links"><a class="btn btn-sm" href="projects/call-triage.html">Live demo</a><a class="btn btn-sm ghost" href="https://github.com/plompee/plompee.github.io/blob/main/projects/call-triage.html" target="_blank" rel="noopener">Source</a></div></div>
       </article>
-      <article class="card" data-r style="--c1:#a78bfa;--c2:#60a5fa">
-        <a class="pvis pvid" href="projects/neural-net.html" aria-label="Open live demo"><video muted loop playsinline preload="none" poster="assets/video/neuralnet.jpg" data-src="assets/video/neuralnet.mp4"></video><span class="play">Live demo ↗</span></a>
-        <div class="card-body">
-          <h3>Neural net playground</h3>
-          <p>Place data points and watch a backprop network learn the decision boundary live. No ML frameworks — just canvas and calculus.</p>
-          <ul class="tags"><li>JavaScript</li><li>Canvas</li><li>Backpropagation</li></ul>
-          <div class="links"><a class="btn btn-sm" href="projects/neural-net.html">Live demo</a><a class="btn btn-sm ghost" href="https://github.com/plompee/plompee.github.io/blob/main/projects/neural-net.html" target="_blank" rel="noopener">Source</a></div>
-        </div>
+      <article class="card mini" data-cat="ai algo">
+        <a class="pvis pvid" href="projects/neural-net.html" aria-label="Open Neural net playground"><video muted loop playsinline preload="none" poster="assets/video/neuralnet.jpg" data-src="assets/video/neuralnet.mp4"></video><span class="play">Live demo ↗</span></a>
+        <div class="card-body"><h3>Neural net playground</h3><p>Place points and watch a backprop network learn the boundary live — no ML libraries.</p>
+          <div class="links"><a class="btn btn-sm" href="projects/neural-net.html">Live demo</a><a class="btn btn-sm ghost" href="https://github.com/plompee/plompee.github.io/blob/main/projects/neural-net.html" target="_blank" rel="noopener">Source</a></div></div>
       </article>
-      <article class="card" data-r style="--c1:#2dd4bf;--c2:#3b82f6">
-        <a class="pvis pvid" href="projects/estate-agency/index.html" aria-label="Open live demo"><video muted loop playsinline preload="none" poster="assets/video/estate.jpg" data-src="assets/video/estate.mp4"></video><span class="play">Live demo ↗</span></a>
-        <div class="card-body">
-          <h3>Estate agency website</h3>
-          <p>Search, filters, property pages, valuation and contact — running entirely in the browser on a real snapshot of the Apex27 Portal API.</p>
-          <ul class="tags"><li>HTML/CSS/JS</li><li>REST API data</li><li>Client-side filtering</li></ul>
-          <div class="links"><a class="btn btn-sm" href="projects/estate-agency/index.html">Live demo</a><a class="btn btn-sm ghost" href="https://github.com/plompee/plompee.github.io/tree/main/projects/estate-agency" target="_blank" rel="noopener">Source</a></div>
-        </div>
+      <article class="card mini" data-cat="web">
+        <a class="pvis pvid" href="projects/estate-agency/index.html" aria-label="Open Estate agency website"><video muted loop playsinline preload="none" poster="assets/video/estate.jpg" data-src="assets/video/estate.mp4"></video><span class="play">Live demo ↗</span></a>
+        <div class="card-body"><h3>Estate agency website</h3><p>Search, filters, property pages and valuations on a real Apex27 Portal API data snapshot.</p>
+          <div class="links"><a class="btn btn-sm" href="projects/estate-agency/index.html">Live demo</a><a class="btn btn-sm ghost" href="https://github.com/plompee/plompee.github.io/tree/main/projects/estate-agency" target="_blank" rel="noopener">Source</a></div></div>
       </article>
-      <article class="card" data-r style="--c1:#38bdf8;--c2:#c7d2fe">
-        <a class="pvis pvid" href="projects/murmuration.html" aria-label="Open live demo"><video muted loop playsinline preload="none" poster="assets/video/murmuration.jpg" data-src="assets/video/murmuration.mp4"></video><span class="play">Live demo ↗</span></a>
-        <div class="card-body">
-          <h3>Murmuration</h3>
-          <p>Thousands of starlings, each following three local rules — separation, alignment, cohesion. The flock that emerges is swarm intelligence. Your cursor is the falcon.</p>
-          <ul class="tags"><li>Boids</li><li>Spatial hashing</li><li>Canvas</li></ul>
-          <div class="links"><a class="btn btn-sm" href="projects/murmuration.html">Live demo</a><a class="btn btn-sm ghost" href="https://github.com/plompee/plompee.github.io/blob/main/projects/murmuration.html" target="_blank" rel="noopener">Source</a></div>
-        </div>
+      <article class="card mini" data-cat="creative algo">
+        <a class="pvis pvid" href="projects/murmuration.html" aria-label="Open Murmuration"><video muted loop playsinline preload="none" poster="assets/video/murmuration.jpg" data-src="assets/video/murmuration.mp4"></video><span class="play">Live demo ↗</span></a>
+        <div class="card-body"><h3>Murmuration</h3><p>Thousands of starlings following three simple rules — swarm intelligence you can chase with your cursor.</p>
+          <div class="links"><a class="btn btn-sm" href="projects/murmuration.html">Live demo</a><a class="btn btn-sm ghost" href="https://github.com/plompee/plompee.github.io/blob/main/projects/murmuration.html" target="_blank" rel="noopener">Source</a></div></div>
       </article>
-      <article class="card card-wide" data-r style="--c1:#818cf8;--c2:#22d3ee">
+      <article class="card mini" data-cat="web" style="--c1:#8b7bff;--c2:#5eead4">
         <div class="pvis">
           <svg class="route" viewBox="0 0 300 200" aria-hidden="true">
             <path id="rt" d="M20 160 C 80 160, 70 50, 140 60 S 220 160, 280 40"/>
             <circle r="7"><animateMotion dur="4s" repeatCount="indefinite"><mpath href="#rt"/></animateMotion></circle>
           </svg>
         </div>
-        <div class="card-body">
-          <h3>Bus timetable app</h3>
-          <p class="meta">University of Kent · Team project · 01/2026 – 05/2026</p>
-          <p>I worked on the backend / data side — fetching, structuring and connecting live bus timetable data so it displayed correctly in the app's front end, and delivered a working demo with the team by the deadline.</p>
-          <ul class="tags"><li>Team project</li><li>Backend / data</li><li>Coursework</li></ul>
-        </div>
+        <div class="card-body"><h3>Bus timetable app</h3><p>University of Kent team project: I built the backend / data side, connecting live bus timetable data to the app.</p>
+          <ul class="tags"><li>Team project</li><li>Backend</li></ul></div>
       </article>
     </div>
   </section>
 
-  <!-- EXPERIENCE -->
-  <section class="sec" id="work">
-    <div class="sec-head" data-r><span>03</span><h2>Where I've <em>worked</em></h2></div>
-    <ol class="rows">
-      <li data-r>
-        <span class="row-date">06/2026 – 08/2026</span>
-        <div><h3>AI Automation Assistant</h3><p class="row-org">Apex27 · Real Estate Agency · Remote · Part-time</p>
-        <p>Helped implement an AI system that drafts and sends replies to client enquiries, and an AI call-answering system that triages calls — booking meetings with management or forwarding notifications. Tuned the workflows to real business needs.</p></div>
-      </li>
-      <li data-r>
-        <span class="row-date">09/2023 – 06/2026</span>
-        <div><h3>Crew Member</h3><p class="row-org">Five Guys · Part-time</p>
-        <p>Fast, courteous service in a high-volume restaurant. Accurate orders, cash and card handling, and switching between grill, till and prep at peak times.</p></div>
-      </li>
-      <li data-r>
-        <span class="row-date">02/2022 – 06/2022</span>
-        <div><h3>Volunteer — Medical Supply Logistics</h3><p class="row-org">Ukrainian Armed Forces</p>
-        <p>Organised and dispensed essential medications for frontline supply, keeping accurate stock records.</p></div>
-      </li>
-    </ol>
+  <!-- JOURNEY: work and education on one timeline -->
+  <section class="sec" id="journey">
+    <div class="sec-head" data-r><span>03</span><h2>My <em>journey</em></h2></div>
+    <div class="timeline" id="timeline">
+      <div class="tl-line" aria-hidden="true"><i id="tl-fill"></i></div>
+      <article class="tl-item" data-r>
+        <span class="tl-dot" aria-hidden="true"></span>
+        <div class="tl-card"><div class="tl-top"><span class="tl-date">06/2026 – 08/2026</span><span class="tl-kind work">Work</span></div>
+          <h3>AI Automation Assistant</h3><p class="tl-org">Apex27 · Real estate agency · Remote</p>
+          <p>Helped implement AI that drafts and sends replies to client enquiries, and an AI call-answering system that triages calls — booking meetings or forwarding notifications. Tuned the workflows to real business needs.</p></div>
+      </article>
+      <article class="tl-item" data-r>
+        <span class="tl-dot" aria-hidden="true"></span>
+        <div class="tl-card"><div class="tl-top"><span class="tl-date">09/2025 – now</span><span class="tl-kind study">Education</span></div>
+          <h3>BSc Computer Science &amp; AI</h3><p class="tl-org">University of Kent · Canterbury</p>
+          <p>Year 1 complete, progressing to Year 2 in September 2026, with an integrated Year in Industry placement.</p></div>
+      </article>
+      <article class="tl-item" data-r>
+        <span class="tl-dot" aria-hidden="true"></span>
+        <div class="tl-card"><div class="tl-top"><span class="tl-date">09/2023 – 06/2026</span><span class="tl-kind work">Work</span></div>
+          <h3>Crew Member</h3><p class="tl-org">Five Guys · Part-time</p>
+          <p>Fast, courteous service in a high-volume restaurant: accurate orders, cash and card handling, and switching between grill, till and prep at peak times.</p></div>
+      </article>
+      <article class="tl-item" data-r>
+        <span class="tl-dot" aria-hidden="true"></span>
+        <div class="tl-card"><div class="tl-top"><span class="tl-date">2022 – 2023</span><span class="tl-kind study">Education</span></div>
+          <h3>T Level — Digital Production, Design &amp; Development</h3><p class="tl-org">South Essex College</p>
+          <p>Achieved a Merit.</p></div>
+      </article>
+      <article class="tl-item" data-r>
+        <span class="tl-dot" aria-hidden="true"></span>
+        <div class="tl-card"><div class="tl-top"><span class="tl-date">02/2022 – 06/2022</span><span class="tl-kind work">Volunteer</span></div>
+          <h3>Medical Supply Logistics</h3><p class="tl-org">Ukrainian Armed Forces</p>
+          <p>Organised and dispensed essential medications for frontline supply, keeping accurate stock records.</p></div>
+      </article>
+      <article class="tl-item" data-r>
+        <span class="tl-dot" aria-hidden="true"></span>
+        <div class="tl-card"><div class="tl-top"><span class="tl-date">2016 – 2023</span><span class="tl-kind study">Education</span></div>
+          <h3>General Secondary Education</h3><p class="tl-org">Kytskiy Lyceum, Ukraine</p>
+          <p>Grades 10–11 out of 12 across subjects (Mathematics: 11) — the top band on Ukraine's national scale.</p></div>
+      </article>
+    </div>
   </section>
 
-  <!-- EDUCATION -->
-  <section class="sec" id="education">
-    <div class="sec-head" data-r><span>04</span><h2>What I'm <em>studying</em></h2></div>
-    <ol class="rows">
-      <li data-r><span class="row-date">09/2025 – now</span><div><h3>BSc Computer Science &amp; AI</h3><p class="row-org">University of Kent · Canterbury</p><p>Year 1 complete, progressing to Year 2 in September 2026. Includes an integrated Year in Industry placement.</p></div></li>
-      <li data-r><span class="row-date">2022 – 2023</span><div><h3>T Level — Digital Production, Design &amp; Development</h3><p class="row-org">South Essex College</p><p>Achieved a Merit.</p></div></li>
-      <li data-r><span class="row-date">2016 – 2023</span><div><h3>General Secondary Education</h3><p class="row-org">Kytskiy Lyceum, Ukraine</p><p>Grades 10–11 out of 12 across subjects (Mathematics: 11) — the top band on Ukraine's national scale.</p></div></li>
-    </ol>
+  <!-- PROCESS -->
+  <section class="sec" id="process">
+    <div class="sec-head" data-r><span>04</span><h2>How I <em>work</em></h2></div>
+    <div class="steps">
+      <div class="card step" data-r><span class="step-n">01</span><span class="step-icon" aria-hidden="true">🎧</span><h3>Listen</h3><p>Start from the real problem — the calls that go unanswered, the emails that pile up — and agree what "done" looks like.</p></div>
+      <div class="card step" data-r><span class="step-n">02</span><span class="step-icon" aria-hidden="true">⚡</span><h3>Prototype fast</h3><p>A working version with real data in days, so the team can try it instead of imagining it.</p></div>
+      <div class="card step" data-r><span class="step-n">03</span><span class="step-icon" aria-hidden="true">🛡️</span><h3>Make it safe</h3><p>Business rules in code, tests, and a person in the loop wherever a mistake would cost money or trust.</p></div>
+      <div class="card step" data-r><span class="step-n">04</span><span class="step-icon" aria-hidden="true">📈</span><h3>Ship &amp; improve</h3><p>Put it in front of real users, watch what actually happens, and tune it until it earns its place.</p></div>
+    </div>
   </section>
 
   <!-- CONTACT -->
   <section class="sec contact" id="contact">
-    <div class="sec-head" data-r><span>05</span><h2>Say <em>hello</em></h2></div>
-    <div class="contact-card" data-r>
-      <h3>Let's work <em>together</em>.</h3>
-      <p>Open to remote, part-time roles — ideally IT or AI-related — alongside my studies.</p>
-      <div class="cta">
-        <a class="btn" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=dimalivakd@gmail.com" target="_blank" rel="noopener">dimalivakd@gmail.com</a>
+    <div class="contact-card contact-big" data-r>
+      <span class="sec-label">05 · Contact</span>
+      <h2>Have a role, a project or an idea?<br><em>Let's build it.</em></h2>
+      <p>Open to remote, part-time roles — ideally IT or AI — alongside my studies. I usually reply within a day.</p>
+      <div class="contact-actions">
+        <button class="btn copy" id="copy-email" type="button" data-email="dimalivakd@gmail.com"><span>dimalivakd@gmail.com</span><span class="copy-tag" id="copy-tag">Copy</span></button>
+        <a class="btn ghost" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=dimalivakd@gmail.com" target="_blank" rel="noopener">Write an email ↗</a>
         <a class="btn ghost" href="tel:07493798613">07493 798613</a>
       </div>
       <div class="contact-links">
