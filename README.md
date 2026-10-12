@@ -8,6 +8,8 @@ A clean, dark single-page site: an animated AI-receptionist call feed in the her
 
 **[AI Receptionist Studio](https://github.com/plompee/ai-receptionist)** — a configurable AI phone receptionist (Node.js + Claude API). It runs on a server with an API key, so the portfolio shows a labelled demo recording (`assets/video/receptionist.mp4`) and links to the repository.
 
+**[AI Inbox Assistant](https://github.com/plompee/ai-inbox)** — the email companion (Python, FastAPI, Claude structured outputs); also shown as a labelled demo recording (`assets/video/inbox.mp4`).
+
 ## Live demos
 
 | Demo | Path | What it does |
