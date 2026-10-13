@@ -207,6 +207,11 @@
           <h3>AI Receptionist Studio</h3>
           <p>A universal AI phone receptionist. Set up any business — services, prices, hours, FAQs, languages, tone — and it answers calls by voice or text: books, moves and cancels appointments, takes messages, transfers callers and blocks spam. Booking rules are enforced in code, so callers can't talk it out of them.</p>
           <ul class="tags"><li>Node.js</li><li>Tool use</li><li>Speech recognition</li><li>13 languages</li></ul>
+          <div class="talk-jack">
+            <button class="btn tj-btn" id="talk-jack" type="button" aria-pressed="false"><span class="tj-dot" aria-hidden="true"></span><span class="tj-label">Talk to Jack</span></button>
+            <p class="tj-note"><strong>Try it live:</strong> Jack is the AI receptionist for Fade &amp; Co., a demo barber shop. Ask about prices or book a cut. Uses your microphone, calls end after 3 minutes.</p>
+            <p class="tj-status" id="talk-jack-status" role="status" aria-live="polite"></p>
+          </div>
           <div class="links"><a class="btn btn-sm" href="https://github.com/plompee/ai-receptionist" target="_blank" rel="noopener">View on GitHub</a><a class="btn btn-sm ghost" href="https://github.com/plompee/ai-receptionist#run-it" target="_blank" rel="noopener">Run it yourself</a></div>
         </div>
       </article>
@@ -371,5 +376,6 @@
 </footer>
 
 <script type="module" src="script.js"></script>
+<script type="module" src="talk-to-jack.js"></script>
 </body>
 </html>

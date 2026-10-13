@@ -565,3 +565,14 @@ h1 em, h2 em, h3 em {
    below-the-fold sections until they are near the screen. */
 .feed, .stage, .calls { contain: layout paint; }
 .sec { content-visibility: auto; contain-intrinsic-size: auto 1200px; }
+
+/* Talk to Jack — live Vapi demo */
+.talk-jack { margin: 4px 0 18px; padding: 16px; border: 1px solid var(--line); border-radius: 14px; background: rgba(79, 140, 255, .06); }
+.tj-btn { gap: 10px; }
+.tj-dot { width: 9px; height: 9px; border-radius: 50%; background: #16a34a; box-shadow: 0 0 0 0 rgba(22, 163, 74, .6); }
+.tj-btn[data-state="connecting"] .tj-dot { background: #f59e0b; }
+.tj-btn[data-state="live"] .tj-dot { background: #ef4444; animation: tj-pulse 1.4s infinite; }
+@keyframes tj-pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, .6); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+.tj-note { margin-top: 10px; font-size: 14px; color: var(--mute); }
+.tj-status { margin-top: 6px; min-height: 1.4em; font: 500 13px/1.4 var(--mono); color: var(--a2); }
+@media (prefers-reduced-motion: reduce) { .tj-btn[data-state="live"] .tj-dot { animation: none; } }
