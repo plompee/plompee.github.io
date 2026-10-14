@@ -56,6 +56,17 @@
   body[data-state="connecting"] button.call { background: var(--panel); color: var(--mute); border-color: var(--line); }
   button.mute[aria-pressed="true"] { background: var(--gold); color: #1a1408; border-color: var(--gold); }
   button[hidden] { display: none; }
+  .intro { display: none; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; font-size: 14.5px; }
+  body.demo .intro { display: block; }
+  .intro p + p, .intro ul { margin-top: 8px; }
+  .intro .try { color: var(--gold-2); font-weight: 600; }
+  .intro ul { list-style: none; display: grid; gap: 4px; }
+  .intro li span { color: var(--mute); font-size: 13px; }
+  .intro .small { color: var(--mute); font-size: 12.5px; }
+  footer { position: relative; flex-wrap: wrap; }
+  footer .back { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--mute); font-size: 13px; text-decoration: none; }
+  body:not(.demo) footer .back { display: none; }
+  @media (max-width: 560px) { footer .back { position: static; transform: none; width: 100%; text-align: center; order: 3; } }
   @media (prefers-reduced-motion: reduce) { .pole { animation: none; } .msg { animation: none; } }
 </style>
 </head>
@@ -72,10 +83,23 @@
     <div class="who">Jack</div>
     <p class="hint" id="hint">Connecting to Jack…</p>
   </section>
-  <section class="chat" id="chat" aria-live="polite" aria-label="Conversation"></section>
+  <section class="chat" id="chat" aria-live="polite" aria-label="Conversation">
+    <div class="intro" id="intro">
+      <p><b>Live demo.</b> Jack is an AI receptionist for <i>Fade &amp; Co.</i>, a made-up barber shop. Press <b>Call Jack</b>, allow your microphone and talk to him like you would on the phone.</p>
+      <p class="try">Try saying:</p>
+      <ul>
+        <li>“Can I book a skin fade on Saturday morning?”</li>
+        <li>“How much is a haircut, and do you do a student discount?”</li>
+        <li>“I need to cancel my booking.”</li>
+        <li>“Добрий день, можна записатися?” <span>(he speaks Ukrainian &amp; Polish too)</span></li>
+      </ul>
+      <p class="small">Calls are capped at 3 minutes. Bookings go into a demo diary, so use a made-up name and number. Voice runs on Vapi; this site doesn't store the conversation.</p>
+    </div>
+  </section>
 </main>
 
 <footer>
+  <a class="back" href="../#projects">← Back to portfolio</a>
   <button class="mute" id="mute" type="button" aria-pressed="false" hidden>🎙️ Mute</button>
   <button class="call" id="call" type="button">📞 Call Jack</button>
 </footer>
@@ -86,7 +110,9 @@
 // This public key is browser-safe and locked (in Vapi) to this website and to Jack only.
 const VAPI_PUBLIC_KEY = "8b9a9bec-e742-4a0e-a929-163aac211771";
 const ASSISTANT_ID = "d99524b0-28ce-4c5d-8c18-fa8dcd2c6c20";
-const autostart = new URLSearchParams(location.search).get("autostart") !== "0";
+const params = new URLSearchParams(location.search);
+const appMode = params.get("app") === "1";            // opened from the desktop "Jack" icon
+const autostart = appMode || params.get("autostart") === "1";
 
 const $ = (id) => document.getElementById(id);
 const chat = $("chat"), callBtn = $("call"), muteBtn = $("mute");
@@ -111,6 +137,7 @@ function note(text) { const el = document.createElement("div"); el.className = "
 
 function transcript(role, text, final) {
   const who = role === "user" ? "you" : "jack";
+  $("intro")?.remove(); // tips make way for the conversation
   let el = partial[role];
   if (!el) {
     el = document.createElement("div");
@@ -160,7 +187,12 @@ async function start() {
   setState("connecting", "Connecting…", "Allow the microphone if your browser asks.");
   try {
     const v = await client();
-    await v.start(ASSISTANT_ID);
+    // Public demo: cap each call at 3 minutes to protect credit (the desktop app uses the assistant's own limit).
+    if (appMode) await v.start(ASSISTANT_ID);
+    else {
+      try { await v.start(ASSISTANT_ID, { maxDurationSeconds: 180 }); }
+      catch (e) { console.warn("override refused, starting plain", e); await v.start(ASSISTANT_ID); }
+    }
   } catch (e) {
     console.error(e);
     setState("error", "Couldn't connect", "Allow the microphone, then press Call Jack.");
@@ -177,7 +209,8 @@ muteBtn.addEventListener("click", () => {
 addEventListener("beforeunload", () => { try { vapi?.stop(); } catch {} });
 
 // autostart: connect as soon as the app opens. If the browser blocks it without a click, the button is ready.
-setState("idle", "Ready", "Press Call Jack to start.");
+setState("idle", "Ready", appMode ? "Connecting to Jack…" : "Press Call Jack and talk - he'll answer out loud.");
+if (!appMode) document.body.classList.add("demo");
 if (autostart) start();
 </script>
 </body>
